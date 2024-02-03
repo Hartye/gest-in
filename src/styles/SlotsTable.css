@@ -1,15 +1,96 @@
 div.slots-table {
     width: 100%;
-    height: 100%;
+    height: calc(100vh - 1rem - 3rem);
+
+    scroll-behavior: smooth;
+
+    overflow: auto;
+    overflow-x: hidden;
 
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
+}
+
+div.slots-table > div.content {
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+div.slots-table > div.content > div {
+    width: 100%;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(8, 1fr);
+}
+
+
+div.slots-table > div.content > div > div {
+    width: 100%;
+    height: 5rem;
+    border-radius: 10px;
+    background-color: var(--black);
+    color: var(--white);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: all .2s ease-in-out;
+}
+
+div.slots-table > div.content > div > div:not(.hour) {
+    display: flex;
+    flex-direction: column;
+}
+
+div.slots-table > div.content > div > div:not(.hour) > span {
+    cursor: pointer;
+    width: 100%;
+    height: 50%;
+
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+
+    transition: all .2s ease-in-out;
+}
+
+div.slots-table > div.content > div > div:not(.hour) > span.green:hover,
+div.slots-table > div.content > div > div:not(.hour) > span.red:hover {
+    transform: scale(1.1);
+    transition: all .2s ease-in-out;
+}
+
+div.slots-table > div.content > div > div:not(.hour) > span.first {
+    border-radius: 10px 10px 0 0;
+    border-bottom: 3px dotted var(--black);
+}
+
+div.slots-table > div.content > div > div:not(.hour) > span.second {
+    border-radius: 0 0 10px 10px;
+    border-top: 3px dotted var(--black);
+}
+
+div.slots-table > div.content > div > div:not(.hour):hover {
+    transform: scale(1.1);
+    transition: all .2s ease-in-out;
+    z-index: 1;
 }
 
 div.slots-table > div.header {
+    z-index: 2;
+    position: sticky;
+    top: 0;
+    background-color: var(--dark-white);
+    padding-bottom: 10px;
     display: grid;
-    gap: 20px;
+    gap: 10px;
     grid-template-columns: repeat(8, 1fr);
 }
 
@@ -17,7 +98,8 @@ div.slots-table > div.header > div {
     width: 100%;
     height: 3rem;
     border-radius: 20px;
-    background-color: var(--white);
+    background-color: var(--black);
+    color: var(--white);
 
     display: flex;
     justify-content: center;

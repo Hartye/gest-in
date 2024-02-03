@@ -1,8 +1,8 @@
-div.read-files {
+label.read-files {
     width: 100%;
     height: 3rem;
     border-radius: 30px;
-    background-color: var(--light-yellow);
+    background-color: var(--white);
 
     display: flex;
     justify-content: space-between;
@@ -11,15 +11,22 @@ div.read-files {
     padding: 5px 5px 5px 10px;
 }
 
-div.read-files > span {
+label.read-files > p {
     width: 80%;
+    color: var(--black)
 }
 
-div.read-files > img {
+label.read-files > input {
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
+}
+
+label.read-files > img {
     user-select: none;
     height: 100%;
     padding: .2rem;
     border-radius: 50%;
 
-    background-color: var(--white);
+    background-color: var(--black);
 }

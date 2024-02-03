@@ -1,12 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 :root {
-  --white: #F5F7F8;
-  --black: #45474B;
-  --light-yellow: #FB8B24;
-  --dark-yellow: #E36414;
+  --white: #EEEDEB;
+  --dark-white: #D9D9D9;
+  --gray: #B6BBC4;
+  --black: #3C3633;
+  --light-black: #9A9A9A;
+  --medium-black: #747264;
+  --red: #9A031E;
   --green: #65B741;
-  --violet: #5F0F40;
 }
 
 * {
@@ -17,13 +19,13 @@
 }
 
 main {
-  padding: 1rem;
-  background-color: var(--violet);
+  padding: .5rem;
+  background-color: var(--black);
   width: 100vw;
   height: 100vh;
   display: grid;
   grid-template-columns: 2fr 10fr;
-  gap: 20px;
+  gap: 10px;
 }
 
 .pointer-on-hover:hover {
@@ -34,4 +36,89 @@ main {
   font-size: 1.2rem;
   font-weight: bold;
   color: var(--white);
+}
+
+.red {
+  background-color: var(--red) !important;
+}
+
+.green {
+  background-color: var(--green) !important;
+}
+
+.click:active {
+  animation: click .2s;
+}
+
+nav.combobox {
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: var(--white);
+  border: 5px solid var(--white);
+  border-radius: 10px;
+  align-items: center;
+  user-select: none;
+
+  & span.combobox-title {
+    width: 100%;
+    text-align: center;
+    padding: 5px;
+    background-color: var(--black);
+    border-radius: 10px;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    padding-left: 5px;
+    gap: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    & img.combobox-icon {
+      width: 30px;
+      height: 30px;
+
+      &.tilt {
+        transform: rotate(90deg);
+      }
+    }
+  }
+
+  & div.combobox-body {
+    width: 100%;
+    max-height: 0px;
+    transition: all .3s linear;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    overflow: hidden;
+    background-color: var(--light-black);
+    border-radius: 10px;
+
+    & li {
+      text-decoration: none;
+      padding: 5px 15px;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--white);
+      background-color: var(--black);
+    }
+  }
+
+  & div.combobox-body.open {
+    max-height: 500px;
+    height: fit-content;
+  }
+}
+
+@keyframes click {
+  0% {
+      transform: translateY(0);
+  } 100% {
+      transform: translateY(10px);
+  }
 }
