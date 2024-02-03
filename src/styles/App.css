@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+:root {
+  --white: #F5F7F8;
+  --black: #45474B;
+  --light-yellow: #FB8B24;
+  --dark-yellow: #E36414;
+  --green: #65B741;
+  --violet: #5F0F40;
+}
+
+* {
+  font-family: 'Roboto', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+main {
+  padding: 1rem;
+  background-color: var(--violet);
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 2fr 10fr;
+  gap: 20px;
+}
+
+.pointer-on-hover:hover {
+  cursor: pointer;
+}
+
+.white-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--white);
+}

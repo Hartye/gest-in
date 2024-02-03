@@ -1,0 +1,25 @@
+div.read-files {
+    width: 100%;
+    height: 3rem;
+    border-radius: 30px;
+    background-color: var(--light-yellow);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 5px 5px 5px 10px;
+}
+
+div.read-files > span {
+    width: 80%;
+}
+
+div.read-files > img {
+    user-select: none;
+    height: 100%;
+    padding: .2rem;
+    border-radius: 50%;
+
+    background-color: var(--white);
+}
