@@ -1,6 +1,6 @@
 # Project made using React + TypeScript + Vite
 
-- The project is soon to be hosted in [Vercel](https://vercel.com)
+- The project is hosted in [Vercel](https://gest-in.vercel.app/)
 
 - For now you can run it localy by running the following code in `git bash`:
 
