@@ -11,7 +11,7 @@ div.account-button > img {
     height: 4rem;
     padding: .5rem;
     background-color: var(--black);
-    border: 5px solid var(--dark-white);
+    border: 5px solid var(--white);
     border-radius: 50%;
     margin-right: -2rem;
     z-index: 2;

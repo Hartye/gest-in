@@ -5,6 +5,7 @@
   --dark-white: #D9D9D9;
   --gray: #B6BBC4;
   --black: #3C3633;
+  --dark-black: #2C2727;
   --light-black: #9A9A9A;
   --medium-black: #747264;
   --red: #9A031E;
@@ -20,7 +21,7 @@
 
 main {
   padding: .5rem;
-  background-color: var(--black);
+  background-color: var(--dark-black);
   width: 100vw;
   height: 100vh;
   display: grid;
@@ -50,6 +51,24 @@ main {
   animation: click .2s;
 }
 
+.shadow-white {
+  box-shadow: 0 10px 0 var(--white);
+  border-radius: 10px;
+  transition: all .2s ease-in-out;
+}
+
+.shadow-black {
+  box-shadow: 0 10px 0 var(--black);
+  border-radius: 10px;
+  transition: all .2s ease-in-out;
+}
+
+.shadow-gray {
+  box-shadow: 0 10px 0 var(--gray);
+  border-radius: 10px;
+  transition: all .2s ease-in-out;
+}
+
 nav.combobox {
   max-width: 100%;
   display: flex;
@@ -63,18 +82,26 @@ nav.combobox {
 
   & span.combobox-title {
     width: 100%;
-    text-align: center;
     padding: 5px;
     background-color: var(--black);
     border-radius: 10px;
-    color: var(--white);
     display: flex;
     align-items: center;
     padding-left: 5px;
     gap: 5px;
+    color: var(--white);
+    text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    & p {
+      color: var(--white);
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
     & img.combobox-icon {
       width: 30px;
@@ -117,8 +144,10 @@ nav.combobox {
 
 @keyframes click {
   0% {
-      transform: translateY(0);
-  } 100% {
-      transform: translateY(10px);
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(10px);
   }
 }

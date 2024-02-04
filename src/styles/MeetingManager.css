@@ -1,4 +1,4 @@
-div.canvas {
+section.manager {
     z-index: 2;
     width: calc(100% - 10px);
     height: calc(100% - 10px);
@@ -7,10 +7,14 @@ div.canvas {
     border-radius: 10px;
     padding: 1rem;
 
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    gap: 10px;
+
     background-color: var(--dark-white);
 }
 
-div.canvas::after {
+section.manager::after {
     z-index: 1;
     position: absolute;
     content: "";

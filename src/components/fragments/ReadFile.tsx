@@ -6,6 +6,7 @@ import ReadFileIcon from "../../assets/read_file.svg";
 
 export const ReadFile = (props: propsType) => {
     const {
+        handleSetTeachers,
         changeInfo
     } = props;
 
@@ -20,9 +21,25 @@ export const ReadFile = (props: propsType) => {
                 try {
                     const jsonString: string = el.target?.result as string;
 
-                    const parsedToObject: Array<infoType> = JSON.parse(jsonString);
+                    const parsedToObject: Array<infoType> | Array<teachersObject> = JSON.parse(jsonString);
 
-                    changeInfo(parsedToObject);
+                    if (parsedToObject[0].format == "horario") {
+                        const infoTypeData: Array<infoType> = parsedToObject as Array<infoType>;
+                        changeInfo(infoTypeData);
+                        console.log("Horário");
+                        console.log(parsedToObject);
+                    }
+                    else if (parsedToObject[0].format == "professor") {
+                        const teacherTypeData: Array<teachersObject> = parsedToObject as Array<teachersObject>;
+                        handleSetTeachers(teacherTypeData);
+                        console.log("Professores");
+                        console.log(parsedToObject);
+                    }
+                    else {
+                        const text = "Erro não foi possível ler o arquivo";
+                        console.log(text)
+                        alert(text);
+                    }
                 }
                 catch (err) {
                     console.log(err);
@@ -34,7 +51,7 @@ export const ReadFile = (props: propsType) => {
     }
 
     return (
-        <label className="white-text pointer-on-hover read-files">
+        <label className="white-text pointer-on-hover read-files click shadow-gray">
             <p>Ler Arquivo</p>
             <input onChange={
                 () => {
@@ -47,6 +64,7 @@ export const ReadFile = (props: propsType) => {
 }
 
 type infoType = {
+    format: string;
     type: string;
     startHour: number;
     startMinute: number;
@@ -55,6 +73,24 @@ type infoType = {
     weekDay: number;
 }
 
+type teacherType = "secretario" | "coordenador" | "orientador";
+
+interface teacherMeetings {
+    startHour: number;
+    startMinute: number;
+    endHour: number;
+    endMinute: number;
+}
+
+interface teachersObject {
+    format: string;
+    id: number;
+    name: string;
+    type: teacherType;
+    meetings: Array<teacherMeetings>
+}
+
 interface propsType {
+    handleSetTeachers: (data: Array<teachersObject>) => void;
     changeInfo: (data: Array<infoType>) => void;
 }

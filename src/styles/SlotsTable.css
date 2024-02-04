@@ -13,6 +13,7 @@ div.slots-table {
 }
 
 div.slots-table > div.content {
+    z-index: 3;
     flex-grow: 1;
 
     display: flex;
@@ -84,7 +85,7 @@ div.slots-table > div.content > div > div:not(.hour):hover {
 }
 
 div.slots-table > div.header {
-    z-index: 2;
+    z-index: 4;
     position: sticky;
     top: 0;
     background-color: var(--dark-white);

@@ -2,14 +2,80 @@
 import "../../styles/SlotsTable.css";
 
 // Dependencies
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 export const SlotsTable = (props: propsType) => {
     const {
+        selectedStartingCell,
+        handleChangeEndingCell,
+        handleChangeStartingCell,
         slots
     } = props;
 
-    // This will run on every load just once
+    const weekDay = (id: number): string => {
+        switch (id) {
+          case 1:
+            return "SEG";
+            break;
+          case 2:
+            return "TER";
+            break;
+          case 3:
+            return "QUA";
+            break;
+          case 4:
+            return "QUI";
+            break;
+          case 5:
+            return "SEX";
+            break;
+          case 6:
+            return "SAB";
+            break;
+          case 7:
+            return "DOM";
+            break;
+          default:
+            return "ERROR"
+        }
+      }
+
+    const setEventListener = useCallback((elemennt: Element) => {
+        elemennt.addEventListener("click", () => {
+            if (selectedStartingCell == "") {
+                handleChangeStartingCell(elemennt.parentElement?.className.split("cell-")[1] as string);
+            }
+            else {
+                const day = 
+                    Number((elemennt.parentElement?.className
+                        .split("cell-")[1])
+                        ?.split("-")[1]);
+                if (
+                    weekDay(day)
+                    ===
+                    selectedStartingCell.split("-")[1].trim()
+                ) {
+                    const endingHour = 
+                        Number(elemennt.parentElement
+                            ?.className
+                                .split("cell-")[1]
+                                .split("-")[0]) + 8;
+                    const startingHour = 
+                        Number(selectedStartingCell
+                            .split("-")[0]
+                            .split(":")[0]);
+
+                    if (
+                        endingHour > startingHour
+                    ) {
+                        handleChangeEndingCell(elemennt.parentElement?.className.split("cell-")[1] as string);
+                    }
+                }
+            }
+        })
+    }, [handleChangeEndingCell, handleChangeStartingCell, selectedStartingCell])
+
+    // This will run on load just once
     useEffect(() => {
         const divContent = document.querySelector(".content") as HTMLDivElement;
         divContent.innerHTML = "";
@@ -113,6 +179,8 @@ export const SlotsTable = (props: propsType) => {
                         s.classList.add(slot.type);
                         if (slot.type == "green") {
                             s.innerHTML = "Disponível"
+
+                            setEventListener(s);
                         }
                         else {
                             s.innerHTML = "Ocupado"
@@ -121,7 +189,7 @@ export const SlotsTable = (props: propsType) => {
                 }
             }
         })
-    }, [slots])
+    }, [handleChangeEndingCell, handleChangeStartingCell, selectedStartingCell, setEventListener, slots])
 
     return (
         <div className="slots-table">
@@ -152,5 +220,8 @@ interface slotsInterface {
 }
 
 type propsType = {
+    selectedStartingCell: string;
+    handleChangeEndingCell: (cell: string) => void;
+    handleChangeStartingCell: (cell: string) => void;
     slots: Array<slotsInterface>;
 }
