@@ -8,7 +8,11 @@ import { DetailedCell } from "../components/fragments/DetailedCell"
 export const MeetingManager = (props: propsType) => {
     const {
         changePage,
-        teachers
+        teachers,
+        startTime,
+        endTime,
+        alertMessage,
+        alertState
     } = props;
 
     const createNewFile = (data: choosenTeachers) => {
@@ -32,8 +36,11 @@ export const MeetingManager = (props: propsType) => {
 
     return (
         <section className="manager">
-            <DetailedCell />
-            <ChooseTeacher changePage={changePage} teachers={teachers} createNewFile={createNewFile} />
+            <DetailedCell
+                startTime={startTime}
+                endTime={endTime}
+            />
+            <ChooseTeacher alertMessage={alertMessage} alertState={alertState} changePage={changePage} teachers={teachers} createNewFile={createNewFile} />
         </section>
     )
 }
@@ -62,6 +69,10 @@ interface teachersObject {
 }
 
 type propsType = {
+    startTime: string;
+    endTime: string;
     changePage: (page: string) => void;
     teachers: Array<teachersObject>;
+    alertMessage: (message: string) => void;
+    alertState: (state: boolean) => void;
 }

@@ -24,6 +24,7 @@ export const ChooseSlot = (props: propsType) => {
                 <img className="pointer-on-hover" src={Cross} alt="Remover" onClick={() => {
                     handleChangeEndingCell("");
                     handleChangeStartingCell("");
+                    changePage("canvas");
                 }} />
             </div>
             {

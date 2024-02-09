@@ -1,0 +1,20 @@
+div.multi-select-list {
+    width: 100%;
+    height: fit-content;
+    min-height: 10px;
+    padding: 0 .5rem .5rem .5rem;
+    border-radius: 20px;
+    background-color: var(--gray);
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+div.multi-select-list h2 {
+    width: 100%;
+    height: 3rem;
+    border-radius: 10px;
+    background-color: var(--black);
+    color: var(--white);
+}

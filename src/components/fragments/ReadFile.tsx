@@ -63,6 +63,7 @@ export const ReadFile = (props: propsType) => {
     )
 }
 
+// type green or red
 type infoType = {
     format: string;
     type: string;
@@ -80,6 +81,7 @@ interface teacherMeetings {
     startMinute: number;
     endHour: number;
     endMinute: number;
+    weekDay: number;
 }
 
 interface teachersObject {

@@ -210,6 +210,7 @@ export const SlotsTable = (props: propsType) => {
     )
 }
 
+// type green or red
 interface slotsInterface {
     type: string;
     startHour: number;

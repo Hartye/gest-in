@@ -11,36 +11,20 @@ div.detailed-cell {
 }
 
 div.detailed-cell h2 {
-    padding: 1.5rem 0;
+    padding: 1rem 2rem;
+    margin: 1rem 0;
     font-size: 1.5rem;
     font-weight: normal;
-    color: var(--white);
-}
-
-div.detailed-cell button {
-    border: none;
+    color: var(--black);
     background-color: var(--white);
-    width: 90%;
-    height: 50px;
-    border-radius: 40px;
-
-    display: flex;
-    justify-content: center;
-    font-size: 1.2rem;
-    align-items: center;
-}
-
-div.detailed-cell img {
-    min-width: 100%;
-    height: 90px;
-    object-fit: cover;
-    object-position: top;
+    border-radius: 30px;
 }
 
 div.detailed-cell div.cell-fill {
     width: 100%;
     flex-grow: 1;
     background-color: var(--red);
+    border-top: 3px dotted var(--white);
     border-radius: 0 0 10px 10px;
 
     display: flex;

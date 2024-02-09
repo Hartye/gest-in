@@ -10,6 +10,7 @@
   --medium-black: #747264;
   --red: #9A031E;
   --green: #65B741;
+  --yellow: #F3B95F;
 }
 
 * {
@@ -45,6 +46,10 @@ main {
 
 .green {
   background-color: var(--green) !important;
+}
+
+.yellow {
+  background-color: var(--yellow) !important;
 }
 
 .click:active {
