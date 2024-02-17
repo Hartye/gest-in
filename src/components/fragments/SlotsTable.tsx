@@ -128,7 +128,7 @@ export const SlotsTable = (props: propsType) => {
 
                 if (startingCell !== -1) {
                     const duration: number = (endingCell - startingCell);
-                    for (let i = 0; i < duration + 1; i++) {
+                    for (let i = 0; i < duration; i++) {
                         let preciseCell: string = "";
                         if (i == 0) {
                             if (meeting.startMinute >= 30) {

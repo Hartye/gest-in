@@ -16,6 +16,7 @@ export const App = () => {
     professors: [],
     startHour: 0,
     startMinute: 0,
+    sigla: "Nome de turma",
     turmaId: 0,
     weekDay: 0
   };
@@ -32,9 +33,13 @@ export const App = () => {
 
   const [turma, setTurma] = useState(Array<turmaType>);
   const [page, setPage] = useState("read");
-  const [teachers, setTeachers] = useState(Array<teachersObject>)
+  const [teachers, setTeachers] = useState(Array<teachersObject>);
   const [newMeeting, setNewMeeting] = useState(tempMeeting);
   const [freeTime, setFreeTime] = useState(tempFreeTime);
+
+  // API
+  const apiUrlNewMeeting = "https://gest-in-back-end.vercel.app/new/meeting";
+  const apiUrlMerge = "https://gest-in-back-end.vercel.app/merge";
 
   const updateNewMeetingHours = (fromHour: number, toHour: number, weekDay: number) => {
     const newMeetingWithNewHours = {
@@ -44,6 +49,7 @@ export const App = () => {
       endMinute: newMeeting.endMinute,
       startMinute: newMeeting.startMinute,
       format: newMeeting.format,
+      sigla: newMeeting.sigla,
       professors: newMeeting.professors,
       turmaId: newMeeting.turmaId
     }
@@ -54,11 +60,35 @@ export const App = () => {
     console.log(newMeetingWithNewHours);
   }
 
+  const addTeacherToNewMeeting = (teacherId: number) => {
+    const newMeetingWithNewTeachers: newMeetingType = newMeeting;
+
+    newMeetingWithNewTeachers.professors.push(teacherId);
+    
+    setNewMeeting(newMeetingWithNewTeachers);
+  }
+
+  const removeTeacherToNewMeeting = (teacherId: number) => {
+    const newMeetingWithNewTeachersGone: newMeetingType = newMeeting;
+
+    newMeetingWithNewTeachersGone.professors = newMeeting.professors.filter(s => s !== teacherId);
+    
+    setNewMeeting(newMeetingWithNewTeachersGone);
+  }
+
   const changeturma = (data: Array<turmaType>): void => {
     setTurma(data);
   }
 
   const changePage = (page: string) => {
+
+    if (page === "read") {
+      setTurma([]);
+      setTeachers([]);
+      setNewMeeting(tempMeeting);
+      setFreeTime(tempFreeTime);
+    }
+
     setPage(page);
   }
 
@@ -100,10 +130,15 @@ export const App = () => {
             : page === "manager"
               ? <MeetingManager
                 changePage={changePage}
+                turmas={turma}
                 teachers={teachers}
                 newMeeting={newMeeting}
                 setFreeTime={handleSetFreeTime}
                 setNewMeeting={handleSetNewMeeting}
+                apiUrlNewMeeting={apiUrlNewMeeting}
+                apiUrlMerge={apiUrlMerge}
+                addTeacher={addTeacherToNewMeeting}
+                removeTeacher={removeTeacherToNewMeeting}
               />
               : page === "read" &&
               <SetFiles
@@ -150,6 +185,7 @@ type newMeetingType = {
   endHour: number;
   endMinute: number;
   weekDay: number;
+  sigla: string;
   professors: Array<number>;
 }
 

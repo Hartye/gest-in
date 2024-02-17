@@ -36,6 +36,7 @@ type newMeetingType = {
     endHour: number;
     endMinute: number;
     weekDay: number;
+    sigla: string;
     professors: Array<number>;
 }
 

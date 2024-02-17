@@ -8,200 +8,104 @@ import { DetailedCell } from "../components/fragments/DetailedCell"
 export const MeetingManager = (props: propsType) => {
     const {
         changePage,
+        turmas,
         teachers,
         setNewMeeting,
         setFreeTime,
-        newMeeting
+        newMeeting,
+        apiUrlNewMeeting,
+        apiUrlMerge,
+        addTeacher,
+        removeTeacher
     } = props;
-
-    const checkForFreeIntervals = (hours: number, day: Array<busyIntervals>): Array<busyIntervals> => {
-        const freeIntervals: Array<busyIntervals> = [];
-
-        for (let i = 8; i < 18; i+=hours) {
-            let open = true;
-
-            day.forEach(s => {
-                if ((s.fromHour >= i && s.fromHour <= i+hours) || (s.toHour >= i && s.toHour <= i+hours)) {
-                    open = false;
-                }
-            })
-
-            if (open == true) {
-                freeIntervals.push({
-                    fromHour: i,
-                    fromMinute: 0,
-                    toHour: i+hours,
-                    toMinute: 0
-                })
-            }
-        }
-
-        return freeIntervals;
-    }
-
-    const checkForFreeTime = (hours: number, notAvailableTimes: busyTime): busyTime => {
-        const freeTime: busyTime = {
-            seg: checkForFreeIntervals(hours, notAvailableTimes.seg),
-            ter: checkForFreeIntervals(hours, notAvailableTimes.ter),
-            qua: checkForFreeIntervals(hours, notAvailableTimes.qua),
-            qui: checkForFreeIntervals(hours, notAvailableTimes.qui),
-            sex: checkForFreeIntervals(hours, notAvailableTimes.sex),
-            sab: checkForFreeIntervals(hours, notAvailableTimes.sab),
-            dom: checkForFreeIntervals(hours, notAvailableTimes.dom)
-        }
-
-        return freeTime;
-    }
 
     const loadNewMeeting = () => {
         if (newMeeting.endHour !== 0 && newMeeting.startHour !== 0) {
             return;
         }
 
-        const busyTime: busyTime = {
-            seg: [],
-            ter: [],
-            qua: [],
-            qui: [],
-            sex: [],
-            sab: [],
-            dom: []
-        }
+        const url = new Request(apiUrlNewMeeting);
 
-        teachers.forEach(teacher => {
-            teacher.meetings.forEach(meeting => {
-                // eslint-disable-next-line no-case-declarations
-                const newValue: busyIntervals = {
-                    fromHour: meeting.startHour,
-                    fromMinute: meeting.startMinute,
-                    toHour: meeting.endHour,
-                    toMinute: meeting.endMinute
-                };
-
-                switch (meeting.weekDay) {
-                    case 1:
-                        busyTime.seg.push(newValue);
-                        break;
-                    case 2:
-                        busyTime.ter.push(newValue);
-                        break;
-                    case 3:
-                        busyTime.qua.push(newValue);
-                        break;
-                    case 4:
-                        busyTime.qui.push(newValue);
-                        break;
-                    case 5:
-                        busyTime.sex.push(newValue);
-                        break;
-                    case 6:
-                        busyTime.sab.push(newValue);
-                        break;
-                    case 7:
-                        busyTime.dom.push(newValue);
-                        break;
-                    default:
-                        break;
-                }
-            })
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json"
+            },
+            body: JSON.stringify(teachers)
         })
+            .then((data) => data.json())
+            .then((data) => {
+                setNewMeeting(data.newMeeting);
+                setFreeTime(data.freeTimeTable);
 
-        const freeTimeTable = checkForFreeTime(2, busyTime);
-
-        const choosenSlot: choosenSlot = 
-            freeTimeTable.seg.length > 0 
-            ? 
-                {
-                    ...freeTimeTable.seg[0],
-                    weekDay: 1
-                }
-            :
-            freeTimeTable.ter.length > 0
-            ?
-                {
-                    ...freeTimeTable.ter[0],
-                    weekDay: 1
-                }
-            :
-            freeTimeTable.qua.length > 0
-            ?
-                {
-                    ...freeTimeTable.qua[0],
-                    weekDay: 1
-                }
-            :
-            freeTimeTable.qui.length > 0
-            ?
-                {
-                    ...freeTimeTable.qui[0],
-                    weekDay: 1
-                }
-            :
-            freeTimeTable.sex.length > 0
-            ?
-                {
-                    ...freeTimeTable.sex[0],
-                    weekDay: 1
-                }
-            :
-            freeTimeTable.sab.length > 0
-            ?
-                {
-                    ...freeTimeTable.sab[0],
-                    weekDay: 1
-                }
-            :
-            freeTimeTable.dom.length > 0
-            ?
-                {
-                    ...freeTimeTable.dom[0],
-                    weekDay: 1
-                }
-            :
-                null;
-
-        const currentNewMeeting: newMeetingType = {
-            format: "newMeeting",
-            startHour: choosenSlot !== null ? choosenSlot.fromHour : 0,
-            startMinute: 0,
-            endHour: choosenSlot !== null ? choosenSlot.toHour : 0,
-            endMinute: 0,
-            professors: [],
-            turmaId: 0,
-            weekDay: choosenSlot !== null ? choosenSlot.weekDay : 0
-        }
-
-        setNewMeeting(currentNewMeeting);
-
-        setFreeTime(freeTimeTable);
+                console.log(data.newMeeting);
+                console.log(data.freeTimeTable);
+            })
+            .catch((err) => console.log(err));
     }
 
-    const createNewFile = (data: choosenTeachers) => {
-        const teachersList = [
-            teachers.filter(s => s.id == data.secretario)[0],
-            teachers.filter(s => s.id == data.coordenador)[0],
-            teachers.filter(s => s.id == data.orientador)[0]
-        ]
+    const createNewFile = () => {
 
-        const element = document.createElement('a');
-        element.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(teachersList)));
-        element.setAttribute('download', "professores.json");
+        let newDataTurmas = {};
+        let newDataProfessores = {};
 
-        element.style.display = 'none';
-        document.body.appendChild(element);
+        const url = new Request(apiUrlMerge);
 
-        element.click();
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({
+                turmas: turmas,
+                professores: teachers,
+                meeting: newMeeting
+            })
+        })
+            .then((data) => data.json())
+            .then((data) => {
+                newDataTurmas = data.turmas;
+                newDataProfessores = data.professores;
 
-        document.body.removeChild(element);
+                downloadFile(newDataTurmas, "Turma");
+                downloadFile(newDataProfessores, "Professores");
+
+                console.log(data.turmas);
+                console.log(data.professores);
+
+                
+                changePage("read");
+            })
+            .catch((err) => {
+                console.log(err);
+                changePage("read");
+            });
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const downloadFile = (file: any, name: string) => {
+        const el = document.createElement('a');
+        el.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(file)));
+        el.setAttribute('download', `${name}.json`);
+        el.style.display = 'none';
+        document.body.appendChild(el);
+        el.click();
+        document.body.removeChild(el);
     }
 
     return (
         <section className="manager" onLoad={() => loadNewMeeting()}>
-            <DetailedCell 
-                newMeeting={newMeeting} 
+            <DetailedCell
+                newMeeting={newMeeting}
                 changePage={changePage}
             />
-            <ChooseTeacher changePage={changePage} teachers={teachers} createNewFile={createNewFile} />
+            <ChooseTeacher 
+                changePage={changePage} 
+                teachers={teachers} 
+                createNewFile={createNewFile} 
+                addTeacher={addTeacher} 
+                removeTeacher={removeTeacher} 
+            />
         </section>
     )
 }
@@ -213,14 +117,6 @@ interface busyIntervals {
     toMinute: number;
 }
 
-type choosenSlot = {
-    fromHour: number;
-    fromMinute: number;
-    toHour: number;
-    toMinute: number;
-    weekDay: number;
-} | null;
-
 interface busyTime {
     seg: Array<busyIntervals>;
     ter: Array<busyIntervals>;
@@ -229,12 +125,6 @@ interface busyTime {
     sex: Array<busyIntervals>;
     sab: Array<busyIntervals>;
     dom: Array<busyIntervals>;
-}
-
-interface choosenTeachers {
-    secretario: number;
-    coordenador: number;
-    orientador: number;
 }
 
 type teacherType = "secretario" | "coordenador" | "orientador";
@@ -257,6 +147,12 @@ interface teachersObject {
     meetings: Array<teacherMeetings>
 }
 
+type turmaType = {
+    format: string;
+    sigla: string;
+    id: number;
+}
+
 type newMeetingType = {
     format: string;
     turmaId: number;
@@ -264,14 +160,20 @@ type newMeetingType = {
     startMinute: number;
     endHour: number;
     endMinute: number;
+    sigla: string;
     weekDay: number;
     professors: Array<number>;
 }
 
 type propsType = {
     changePage: (page: string) => void;
+    turmas: Array<turmaType>;
     teachers: Array<teachersObject>;
     setNewMeeting: (meeting: newMeetingType) => void;
     setFreeTime: (time: busyTime) => void;
     newMeeting: newMeetingType;
+    apiUrlNewMeeting: string;
+    apiUrlMerge: string;
+    addTeacher: (teacherId: number) => void;
+    removeTeacher: (teacherId: number) => void;
 }

@@ -10,6 +10,8 @@ export const ChooseTeacher = (props: propsType) => {
         changePage,
         createNewFile,
         teachers,
+        addTeacher,
+        removeTeacher
     } = props;
 
     const [secretario, setSecretario] = useState(-1);
@@ -17,14 +19,29 @@ export const ChooseTeacher = (props: propsType) => {
     const [orientador, setOrientador] = useState(-1);
 
     const chooseSecretario = (item: number) => {
+        if (secretario !== -1) {
+            removeTeacher(secretario);
+        }
+
+        addTeacher(item);
         setSecretario(item);
     }
 
     const chooseCoordenador = (item: number) => {
+        if (coordenador !== -1) {
+            removeTeacher(coordenador);
+        }
+
+        addTeacher(item);
         setCoordenador(item);
     }
 
     const chooseOrientador = (item: number) => {
+        if (orientador !== -1) {
+            removeTeacher(orientador);
+        }
+
+        addTeacher(item);
         setOrientador(item);
     }
 
@@ -34,11 +51,7 @@ export const ChooseTeacher = (props: propsType) => {
             coordenador !== -1 &&
             orientador !== -1
         ) {
-            createNewFile({
-                secretario,
-                coordenador,
-                orientador
-            });
+            createNewFile();
         }
     }
 
@@ -85,14 +98,10 @@ interface teachersObject {
     meetings: Array<teacherMeetings>
 }
 
-interface choosenTeachers {
-    secretario: number;
-    coordenador: number;
-    orientador: number;
-}
-
 type propsType = {
     changePage: (page: string) => void;
-    createNewFile: (data: choosenTeachers) => void;
+    createNewFile: () => void;
     teachers: Array<teachersObject>;
+    addTeacher: (teacherId: number) => void;
+    removeTeacher: (teacherId: number) => void;
 };
