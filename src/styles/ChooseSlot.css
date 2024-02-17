@@ -21,35 +21,11 @@ div.choose-slot > div {
 div.choose-slot > div span {
     width: 100%;
     height: 100%;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     color: var(--black);
     background-color: var(--white);
     border-radius: 10px;
     display: flex;
     align-items: center;
-    padding-left: .5rem;
-}
-
-div.choose-slot > div img {
-    height: 100%;
-    padding: 5px;
-    background-color: var(--white);
-    transition: all .2s ease-in-out;
-    border-radius: 10px;
-}
-
-div.choose-slot > div img:hover {
-    transform: scale(1.1);
-    transition: all .2s ease-in-out;
-}
-
-div.choose-slot button {
-    width: 100%;
-    height: 50px;
-    margin-bottom: 10px;
-    font-size: 1.2rem;
-    color: var(--black);
-    border: none;
-    background-color: var(--white);
-    border-radius: 10px;
+    padding-left: 1rem;
 }

@@ -3,12 +3,29 @@ import "../../styles/ReadFile.css";
 
 // Assets
 import ReadFileIcon from "../../assets/read_file.svg";
+import { useEffect, useState } from "react";
 
 export const ReadFile = (props: propsType) => {
     const {
-        handleSetTeachers,
-        changeInfo
+        changeInfo,
+        setTurmaState,
+        setTeacherState
     } = props;
+
+    const [tempTurma, setTempTurma] = useState(Array<turmaType>);
+    const [turmaRead, setTurmaRead] = useState(false);
+    const [tempTeacher, setTempTeacher] = useState(Array<teachersObject>);
+    const [teacherRead, setTeacherRead] = useState(false);
+
+    const uploadData = (teachers: Array<teachersObject>, turmas: Array<turmaType>) => {
+        changeInfo(teachers, turmas);
+    }
+
+    useEffect(() => {
+        if (turmaRead && teacherRead) {
+            uploadData(tempTeacher, tempTurma);
+        }
+    }, [turmaRead, teacherRead, tempTeacher, tempTurma])
 
     const loadNewFile = () => {
         const fileInput = document.querySelector("#file-input") as HTMLInputElement;
@@ -21,17 +38,21 @@ export const ReadFile = (props: propsType) => {
                 try {
                     const jsonString: string = el.target?.result as string;
 
-                    const parsedToObject: Array<infoType> | Array<teachersObject> = JSON.parse(jsonString);
+                    const parsedToObject: Array<turmaType> | Array<teachersObject> = JSON.parse(jsonString);
 
-                    if (parsedToObject[0].format == "horario") {
-                        const infoTypeData: Array<infoType> = parsedToObject as Array<infoType>;
-                        changeInfo(infoTypeData);
+                    if (parsedToObject[0].format == "turma") {
+                        const infoTypeData: Array<turmaType> = parsedToObject as Array<turmaType>;
+                        setTempTurma(infoTypeData);
+                        setTurmaRead(true);
+                        setTurmaState(true);
                         console.log("Horário");
                         console.log(parsedToObject);
                     }
                     else if (parsedToObject[0].format == "professor") {
                         const teacherTypeData: Array<teachersObject> = parsedToObject as Array<teachersObject>;
-                        handleSetTeachers(teacherTypeData);
+                        setTempTeacher(teacherTypeData);
+                        setTeacherRead(true);
+                        setTeacherState(true);
                         console.log("Professores");
                         console.log(parsedToObject);
                     }
@@ -63,23 +84,22 @@ export const ReadFile = (props: propsType) => {
     )
 }
 
-type infoType = {
+type turmaType = {
     format: string;
-    type: string;
-    startHour: number;
-    startMinute: number;
-    endHour: number;
-    endMinute: number;
-    weekDay: number;
+    sigla: string;
+    id: number;
 }
 
 type teacherType = "secretario" | "coordenador" | "orientador";
 
 interface teacherMeetings {
+    turmaId: number;
     startHour: number;
     startMinute: number;
     endHour: number;
     endMinute: number;
+    weekDay: number;
+    professors: Array<number>;
 }
 
 interface teachersObject {
@@ -91,6 +111,7 @@ interface teachersObject {
 }
 
 interface propsType {
-    handleSetTeachers: (data: Array<teachersObject>) => void;
-    changeInfo: (data: Array<infoType>) => void;
+    changeInfo: (teachers: Array<teachersObject>, turmas: Array<turmaType>) => void;
+    setTurmaState: (state: boolean) => void;
+    setTeacherState: (state: boolean) => void;
 }

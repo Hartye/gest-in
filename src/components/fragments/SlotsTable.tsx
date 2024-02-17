@@ -6,74 +6,42 @@ import { useCallback, useEffect } from "react";
 
 export const SlotsTable = (props: propsType) => {
     const {
-        selectedStartingCell,
-        handleChangeEndingCell,
-        handleChangeStartingCell,
-        slots
+        teachers,
+        turmas,
+        freeTime,
+        setNewMeetingHours,
+        changePage
     } = props;
 
-    const weekDay = (id: number): string => {
-        switch (id) {
-          case 1:
-            return "SEG";
-            break;
-          case 2:
-            return "TER";
-            break;
-          case 3:
-            return "QUA";
-            break;
-          case 4:
-            return "QUI";
-            break;
-          case 5:
-            return "SEX";
-            break;
-          case 6:
-            return "SAB";
-            break;
-          case 7:
-            return "DOM";
-            break;
-          default:
-            return "ERROR"
-        }
-      }
+    const setFreeAvailableCells = useCallback((weekDay: number, day: Array<busyIntervals>) => {
+        day.forEach(s => {
+            for (let i = s.fromHour - 8; i < s.toHour - 8; i++) {
+                const cellClass = `.cell-${i}-${weekDay}`;
+                
+                const genericSpanEl: HTMLSpanElement = document.querySelector(cellClass) as HTMLSpanElement;
 
-    const setEventListener = useCallback((elemennt: Element) => {
-        elemennt.addEventListener("click", () => {
-            if (selectedStartingCell == "") {
-                handleChangeStartingCell(elemennt.parentElement?.className.split("cell-")[1] as string);
-            }
-            else {
-                const day = 
-                    Number((elemennt.parentElement?.className
-                        .split("cell-")[1])
-                        ?.split("-")[1]);
-                if (
-                    weekDay(day)
-                    ===
-                    selectedStartingCell.split("-")[1].trim()
-                ) {
-                    const endingHour = 
-                        Number(elemennt.parentElement
-                            ?.className
-                                .split("cell-")[1]
-                                .split("-")[0]) + 8;
-                    const startingHour = 
-                        Number(selectedStartingCell
-                            .split("-")[0]
-                            .split(":")[0]);
+                genericSpanEl.style.backgroundColor = "#77" + (s.fromHour - 8) + "C9" + (s.fromHour - 8);
 
-                    if (
-                        endingHour > startingHour
-                    ) {
-                        handleChangeEndingCell(elemennt.parentElement?.className.split("cell-")[1] as string);
+                document.querySelector(cellClass)?.addEventListener("click", () => {
+                    setNewMeetingHours(s.fromHour, s.toHour, weekDay);
+                    changePage("manager");
+                });
+
+                if (i === s.fromHour - 8) {
+                    const spanEl: HTMLSpanElement = document.querySelector(cellClass + " .first") as HTMLSpanElement;
+                    if (spanEl !== null) {
+                        spanEl.innerHTML = String(s.fromHour);
+                    }
+                }
+                else if (i < s.toHour - 8) {
+                    const spanEl: HTMLSpanElement = document.querySelector(cellClass + " .second") as HTMLSpanElement;
+                    if (spanEl !== null) {
+                        spanEl.innerHTML = String(s.toHour);
                     }
                 }
             }
         })
-    }, [handleChangeEndingCell, handleChangeStartingCell, selectedStartingCell])
+    }, [setNewMeetingHours, changePage])
 
     // This will run on load just once
     useEffect(() => {
@@ -132,64 +100,73 @@ export const SlotsTable = (props: propsType) => {
     });
 
     useEffect(() => {
-        if (slots === undefined) {
+        // Slots diponíveis para clicar
+        setFreeAvailableCells(1, freeTime.seg);
+        setFreeAvailableCells(2, freeTime.ter);
+        setFreeAvailableCells(3, freeTime.qua);
+        setFreeAvailableCells(4, freeTime.qui);
+        setFreeAvailableCells(5, freeTime.sex);
+        setFreeAvailableCells(6, freeTime.sab);
+        setFreeAvailableCells(7, freeTime.dom);
+
+        if (teachers === undefined) {
             return;
         }
 
-        slots.forEach(slot => {
-            let startingCell: number = slot.startHour - 8;
-            const endingCell: number = slot.endHour - 8;
+        teachers.forEach(teacher => {
+            teacher.meetings.forEach(meeting => {
+                let startingCell: number = meeting.startHour - 8;
+                const endingCell: number = meeting.endHour - 8;
 
-            if (
-                (startingCell < 0 || startingCell > 10) ||
-                startingCell > endingCell ||
-                (endingCell < 0 || endingCell > 10)
-            ) {
-                startingCell = -1;
-            }
+                if (
+                    (startingCell < 0 || startingCell > 10) ||
+                    startingCell > endingCell ||
+                    (endingCell < 0 || endingCell > 10)
+                ) {
+                    startingCell = -1;
+                }
 
-            if (startingCell !== -1) {
-                const duration: number = (endingCell - startingCell);
-                for (let i = 0; i < duration + 1; i++) {
-                    let preciseCell: string = "";
-                    if (i == 0) {
-                        if (slot.startMinute >= 30) {
-                            preciseCell = "second";
+                if (startingCell !== -1) {
+                    const duration: number = (endingCell - startingCell);
+                    for (let i = 0; i < duration + 1; i++) {
+                        let preciseCell: string = "";
+                        if (i == 0) {
+                            if (meeting.startMinute >= 30) {
+                                preciseCell = "second";
+                            }
+                            else {
+                                preciseCell = "both"
+                            }
                         }
                         else {
-                            preciseCell = "both"
-                        }
-                    }
-                    else {
-                        if (duration === i) {
-                            if (slot.endMinute <= 30) {
-                                preciseCell = "first";
+                            if (duration === i) {
+                                if (meeting.endMinute <= 30) {
+                                    preciseCell = "first";
+                                }
+                                else {
+                                    preciseCell = "both";
+                                }
                             }
                             else {
                                 preciseCell = "both";
                             }
                         }
-                        else {
-                            preciseCell = "both";
-                        }
+
+                        const cell = `.cell-${startingCell + i}-${meeting.weekDay} .${preciseCell}`;
+                        document.querySelectorAll(cell)?.forEach(s => {
+                            s.innerHTML = turmas.find(i => i.id === meeting.turmaId)?.sigla as string;
+                            s.classList.add("red");
+                        })
                     }
-
-                    const cell = `.cell-${startingCell + i}-${slot.weekDay} .${preciseCell}`;
-                    document.querySelectorAll(cell)?.forEach(s => {
-                        s.classList.add(slot.type);
-                        if (slot.type == "green") {
-                            s.innerHTML = "Disponível"
-
-                            setEventListener(s);
-                        }
-                        else {
-                            s.innerHTML = "Ocupado"
-                        }
-                    })
                 }
-            }
+            })
         })
-    }, [handleChangeEndingCell, handleChangeStartingCell, selectedStartingCell, setEventListener, slots])
+    }, [
+        freeTime, 
+        setFreeAvailableCells,
+        teachers,
+        turmas
+    ])
 
     return (
         <div className="slots-table">
@@ -210,18 +187,53 @@ export const SlotsTable = (props: propsType) => {
     )
 }
 
-interface slotsInterface {
-    type: string;
+type turmaType = {
+    format: string;
+    sigla: string;
+    id: number;
+}
+
+type teacherType = "secretario" | "coordenador" | "orientador";
+
+interface teacherMeetings {
+    turmaId: number;
     startHour: number;
     startMinute: number;
     endHour: number;
     endMinute: number;
     weekDay: number;
+    professors: Array<number>;
+}
+
+interface teachersObject {
+    format: string;
+    id: number;
+    name: string;
+    type: teacherType;
+    meetings: Array<teacherMeetings>
+}
+
+interface busyIntervals {
+    fromHour: number;
+    fromMinute: number;
+    toHour: number;
+    toMinute: number;
+}
+
+interface busyTime {
+    seg: Array<busyIntervals>;
+    ter: Array<busyIntervals>;
+    qua: Array<busyIntervals>;
+    qui: Array<busyIntervals>;
+    sex: Array<busyIntervals>;
+    sab: Array<busyIntervals>;
+    dom: Array<busyIntervals>;
 }
 
 type propsType = {
-    selectedStartingCell: string;
-    handleChangeEndingCell: (cell: string) => void;
-    handleChangeStartingCell: (cell: string) => void;
-    slots: Array<slotsInterface>;
+    teachers: Array<teachersObject>;
+    turmas: Array<turmaType>;
+    freeTime: busyTime;
+    setNewMeetingHours: (fromHour: number, toHour: number, weekDay: number) => void;
+    changePage: (page: string) => void;
 }

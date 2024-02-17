@@ -70,12 +70,12 @@ div.slots-table > div.content > div > div:not(.hour) > span.red:hover {
 
 div.slots-table > div.content > div > div:not(.hour) > span.first {
     border-radius: 10px 10px 0 0;
-    border-bottom: 3px dotted var(--black);
+    border-bottom: 3px dotted var(--white);
 }
 
 div.slots-table > div.content > div > div:not(.hour) > span.second {
     border-radius: 0 0 10px 10px;
-    border-top: 3px dotted var(--black);
+    border-top: 1px dotted var(--white);
 }
 
 div.slots-table > div.content > div > div:not(.hour):hover {

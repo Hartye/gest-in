@@ -1,19 +1,45 @@
 // Styles
 import "../../styles/DetailedCell.css"
 
-// Assets
-import Wave from "../../assets/wave.svg"
+export const DetailedCell = (props: propsType) => {
+    const {
+        newMeeting,
+        changePage
+    } = props;
 
-export const DetailedCell = () => {
     return (
         <div className="detailed-cell">
             <h2>Nova reunião</h2>
-            <button className="pointer-on-hover click">Ver no horário</button>
-            <img src={Wave} alt="Ilustração de uma onda" />
+            <button className="pointer-on-hover click" onClick={() => {
+                changePage("canvas");
+            }}>Escolher outra hora</button>
             <div className="cell-fill">
-                <p>08:00</p>
-                <p>09:00</p>
+                <p>{
+                newMeeting !== undefined ?
+                newMeeting.startHour < 10 ? "0" + newMeeting.startHour + ":00": newMeeting.startHour + ":00"
+                : "Loading"
+                }</p>
+                <p>{newMeeting !== undefined ?
+                newMeeting.endHour < 10 ? "0" + newMeeting.endHour + ":00" : newMeeting.endHour + ":00"
+                : "Loading"
+                }</p>
             </div>
         </div>
     )
+}
+
+type newMeetingType = {
+    format: string;
+    turmaId: number;
+    startHour: number;
+    startMinute: number;
+    endHour: number;
+    endMinute: number;
+    weekDay: number;
+    professors: Array<number>;
+}
+
+type propsType = {
+    newMeeting: newMeetingType;
+    changePage: (page: string) => void;
 }

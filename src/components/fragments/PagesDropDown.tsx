@@ -24,6 +24,7 @@ export const PagesDropDown = (props: propsType) => {
             </span>
             <div className='combobox-body pages'>
                 <li className='click' onClick={() => handleChangePage("canvas")}>Horário</li>
+                <li className='click' onClick={() => handleChangePage("read")}>Carregar novos arquivos</li>
             </div>
         </nav>
     )

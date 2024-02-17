@@ -47,6 +47,10 @@ main {
   background-color: var(--green) !important;
 }
 
+.white {
+  background-color: var(--white) !important;
+}
+
 .click:active {
   animation: click .2s;
 }
