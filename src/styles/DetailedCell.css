@@ -12,17 +12,11 @@ div.detailed-cell {
 }
 
 div.detailed-cell h2 {
-<<<<<<< HEAD
-=======
-    padding: 1rem 2rem;
-    margin: 1rem 0;
->>>>>>> 275f40cb7c83f57ea98e43635d6c03bf5a4b0a9b
     font-size: 1.5rem;
     margin-top: 30px;
     font-weight: normal;
     color: var(--black);
     background-color: var(--white);
-<<<<<<< HEAD
     width: 90%;
     height: 50px;
     border-radius: 40px;
@@ -31,9 +25,13 @@ div.detailed-cell h2 {
     justify-content: center;
     font-size: 1.2rem;
     align-items: center;
-=======
-    border-radius: 30px;
->>>>>>> 275f40cb7c83f57ea98e43635d6c03bf5a4b0a9b
+}
+
+div.detailed-cell button {
+    padding: .5rem 1rem;
+    border-radius: 5px;
+    border: none;
+    font-size: 1.2rem;
 }
 
 div.detailed-cell div.cell-fill {

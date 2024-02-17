@@ -48,13 +48,12 @@ main {
   background-color: var(--green) !important;
 }
 
-<<<<<<< HEAD
 .white {
   background-color: var(--white) !important;
-=======
+}
+
 .yellow {
   background-color: var(--yellow) !important;
->>>>>>> 275f40cb7c83f57ea98e43635d6c03bf5a4b0a9b
 }
 
 .click:active {

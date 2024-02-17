@@ -10,7 +10,7 @@ export const DetailedCell = (props: propsType) => {
     return (
         <div className="detailed-cell">
             <h2>Nova reunião</h2>
-            <button className="pointer-on-hover click" onClick={() => {
+            <button className="pointer-on-hover shadow-gray click" onClick={() => {
                 changePage("canvas");
             }}>Escolher outra hora</button>
             <div className="cell-fill">
