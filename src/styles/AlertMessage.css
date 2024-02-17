@@ -1,0 +1,64 @@
+div.alert {
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .7);
+    transition: all .2s ease-in-out;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+div.body {
+    width: 400px;
+    height: fit-content;
+    min-height: 1rem;
+    background-color: var(--white);
+    border-radius: 20px;
+    padding: 20px;
+    border: 5px dotted var(--red);
+
+    display: flex;
+    flex-direction: column;
+
+    animation: .4s linear introAnimation;
+}
+
+div.body span {
+    width: 100%;
+    padding: .5rem 0 1rem 0;
+    height: fit-content;
+    color: var(--black);
+    font-size: 1.5rem;
+}
+
+div.body > div {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    gap: 10px;
+}
+
+div.body > div button {
+    width: 100%;
+    height: 50px;
+    border-radius: 10px;
+    background-color: var(--black);
+    color: var(--white);
+    font-size: 1.2rem;
+    border: none;
+}
+
+@keyframes introAnimation {
+    0% {
+        transform: translateY(-1000px);
+    }
+    100% {
+        transform: translateY(0);
+        transition: all .4s ease-in-out;
+    }
+}

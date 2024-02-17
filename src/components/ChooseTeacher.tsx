@@ -9,7 +9,7 @@ export const ChooseTeacher = (props: propsType) => {
     const {
         changePage,
         createNewFile,
-        teachers
+        teachers,
     } = props;
 
     const [secretario, setSecretario] = useState(-1);
@@ -39,9 +39,6 @@ export const ChooseTeacher = (props: propsType) => {
                 coordenador,
                 orientador
             });
-        }
-        else {
-            alert("Escolha todos os professores para prosseguir")
         }
     }
 
