@@ -10,13 +10,17 @@ export const MeetingManager = (props: propsType) => {
         changePage,
         turmas,
         teachers,
+        freeTeachers,
         setNewMeeting,
         setFreeTime,
         newMeeting,
         apiUrlNewMeeting,
         apiUrlMerge,
         addTeacher,
-        removeTeacher
+        removeTeacher,
+        changeSecretario,
+        changeOrientador,
+        changeCoordenador
     } = props;
 
     const loadNewMeeting = () => {
@@ -44,10 +48,13 @@ export const MeetingManager = (props: propsType) => {
             .catch((err) => console.log(err));
     }
 
-    const createNewFile = () => {
+    const createNewFile = (turmaName: string) => {
 
         let newDataTurmas = {};
         let newDataProfessores = {};
+
+        const newMeetingWithSigla = newMeeting;
+        newMeetingWithSigla.sigla = turmaName;
 
         const url = new Request(apiUrlMerge);
 
@@ -59,7 +66,7 @@ export const MeetingManager = (props: propsType) => {
             body: JSON.stringify({
                 turmas: turmas,
                 professores: teachers,
-                meeting: newMeeting
+                meeting: newMeetingWithSigla
             })
         })
             .then((data) => data.json())
@@ -101,10 +108,13 @@ export const MeetingManager = (props: propsType) => {
             />
             <ChooseTeacher 
                 changePage={changePage} 
-                teachers={teachers} 
+                freeTeachers={freeTeachers}
                 createNewFile={createNewFile} 
                 addTeacher={addTeacher} 
                 removeTeacher={removeTeacher} 
+                changeSecretario={changeSecretario}
+                changeOrientador={changeOrientador}
+                changeCoordenador={changeCoordenador}
             />
         </section>
     )
@@ -162,6 +172,9 @@ type newMeetingType = {
     endMinute: number;
     sigla: string;
     weekDay: number;
+    orientador: number;
+    coordenador: number;
+    secretario: number;
     professors: Array<number>;
 }
 
@@ -169,6 +182,7 @@ type propsType = {
     changePage: (page: string) => void;
     turmas: Array<turmaType>;
     teachers: Array<teachersObject>;
+    freeTeachers: Array<teachersObject>;
     setNewMeeting: (meeting: newMeetingType) => void;
     setFreeTime: (time: busyTime) => void;
     newMeeting: newMeetingType;
@@ -176,4 +190,7 @@ type propsType = {
     apiUrlMerge: string;
     addTeacher: (teacherId: number) => void;
     removeTeacher: (teacherId: number) => void;
+    changeSecretario: (teacherId: number) => void;
+    changeOrientador: (teacherId: number) => void;
+    changeCoordenador: (teacherId: number) => void;
 }

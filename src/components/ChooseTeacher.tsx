@@ -4,14 +4,18 @@ import "../styles/ChooseTeacher.css"
 
 // Components
 import { StylizedDropDown } from "./fragments/StylizedDropDown"
+import { MultiSelectList } from "./fragments/MultiSelectList";
 
 export const ChooseTeacher = (props: propsType) => {
     const {
         changePage,
         createNewFile,
-        teachers,
+        freeTeachers,
         addTeacher,
-        removeTeacher
+        removeTeacher,
+        changeSecretario,
+        changeOrientador,
+        changeCoordenador
     } = props;
 
     const [secretario, setSecretario] = useState(-1);
@@ -19,28 +23,19 @@ export const ChooseTeacher = (props: propsType) => {
     const [orientador, setOrientador] = useState(-1);
 
     const chooseSecretario = (item: number) => {
-        if (secretario !== -1) {
-            removeTeacher(secretario);
-        }
-
+        changeSecretario(item);
         addTeacher(item);
         setSecretario(item);
     }
 
     const chooseCoordenador = (item: number) => {
-        if (coordenador !== -1) {
-            removeTeacher(coordenador);
-        }
-
+        changeCoordenador(item);
         addTeacher(item);
         setCoordenador(item);
     }
 
     const chooseOrientador = (item: number) => {
-        if (orientador !== -1) {
-            removeTeacher(orientador);
-        }
-
+        changeOrientador(item);
         addTeacher(item);
         setOrientador(item);
     }
@@ -51,28 +46,37 @@ export const ChooseTeacher = (props: propsType) => {
             coordenador !== -1 &&
             orientador !== -1
         ) {
-            createNewFile();
+            const turmaName = document.querySelector("#turma-name") as HTMLInputElement;
+            createNewFile(String(turmaName.value));
         }
     }
 
     return (
         <div className="choose-teacher">
+            <input type="text" id="turma-name" placeholder="Nome da turma" />
             <StylizedDropDown
                 type="secretario"
                 title="Professor Secretário"
-                list={teachers.filter(s => s.type == "secretario")}
+                list={freeTeachers.filter(s => s.type == "secretario")}
                 chooseItem={chooseSecretario}
             />
             <StylizedDropDown
                 type="coordenador"
                 title="Professor Coordenador"
-                list={teachers.filter(s => s.type == "coordenador")}
+                list={freeTeachers.filter(s => s.type == "coordenador")}
                 chooseItem={chooseCoordenador}
             />
             <StylizedDropDown
                 type="orientador"
-                title="Professor Orientador" list={teachers.filter(s => s.type == "orientador")}
-                chooseItem={chooseOrientador} />
+                title="Professor Orientador" list={freeTeachers.filter(s => s.type == "orientador")}
+                chooseItem={chooseOrientador} 
+            />
+            <MultiSelectList 
+                title="Professores não obrigatórios" 
+                freeTeachers={freeTeachers} 
+                addTeacher={addTeacher}
+                removeTeacher={removeTeacher}
+            />
             <div className="controls">
                 <button className="click pointer-on-hover shadow-gray" onClick={() => changePage("canvas")}>Cancelar</button>
                 <button className="click pointer-on-hover shadow-gray" onClick={() => handleCreate()}>Finalizar</button>
@@ -100,8 +104,11 @@ interface teachersObject {
 
 type propsType = {
     changePage: (page: string) => void;
-    createNewFile: () => void;
-    teachers: Array<teachersObject>;
+    createNewFile: (turmaName: string) => void;
+    freeTeachers: Array<teachersObject>;
     addTeacher: (teacherId: number) => void;
     removeTeacher: (teacherId: number) => void;
+    changeSecretario: (teacherId: number) => void;
+    changeOrientador: (teacherId: number) => void;
+    changeCoordenador: (teacherId: number) => void;
 };

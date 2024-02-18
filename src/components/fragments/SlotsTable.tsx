@@ -157,13 +157,19 @@ export const SlotsTable = (props: propsType) => {
                             s.innerHTML = turmas.find(i => i.id === meeting.turmaId)?.sigla as string;
                             s.classList.add("red");
                         })
+                        document.querySelector(cell)?.addEventListener("click", () => {
+                            setNewMeetingHours(meeting.startHour, meeting.endHour, meeting.weekDay);
+                            changePage("manager");
+                        });
                     }
                 }
             })
         })
     }, [
+        changePage,
         freeTime, 
         setFreeAvailableCells,
+        setNewMeetingHours,
         teachers,
         turmas
     ])

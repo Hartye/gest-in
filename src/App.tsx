@@ -18,7 +18,10 @@ export const App = () => {
     startMinute: 0,
     sigla: "Nome de turma",
     turmaId: 0,
-    weekDay: 0
+    weekDay: 0,
+    orientador: -1,
+    secretario: -1,
+    coordenador: -1
   };
 
   const tempFreeTime: busyTime = {
@@ -34,45 +37,107 @@ export const App = () => {
   const [turma, setTurma] = useState(Array<turmaType>);
   const [page, setPage] = useState("read");
   const [teachers, setTeachers] = useState(Array<teachersObject>);
+  const [freeTeachers, setFreeTeachers] = useState(Array<teachersObject>);
   const [newMeeting, setNewMeeting] = useState(tempMeeting);
   const [freeTime, setFreeTime] = useState(tempFreeTime);
 
   // API
-  const apiUrlNewMeeting = "https://gest-in-back-end.vercel.app/new/meeting";
-  const apiUrlMerge = "https://gest-in-back-end.vercel.app/merge";
+  const apiUrlBase = "https://gest-in-back-end.vercel.app";
+  const apiUrlNewMeeting = apiUrlBase + "/new/meeting";
+  const apiUrlMerge = apiUrlBase + "/merge";
+  const apiUrlFreeTeachers = apiUrlBase + "/free/teachers";
+
+  const updateFreeTeachers = (meeting: newMeetingType) => {
+    const url = new Request(apiUrlFreeTeachers);
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({
+        meeting: {
+          startHour: meeting.startHour,
+          endHour: meeting.endHour,
+          weekDay: meeting.weekDay
+        },
+        professores: teachers
+      })
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        setFreeTeachers(data);
+      })
+      .catch((err) => console.log(err));
+  }
 
   const updateNewMeetingHours = (fromHour: number, toHour: number, weekDay: number) => {
-    const newMeetingWithNewHours = {
-      endHour: toHour,
-      startHour: fromHour,
-      weekDay: weekDay,
-      endMinute: newMeeting.endMinute,
-      startMinute: newMeeting.startMinute,
-      format: newMeeting.format,
-      sigla: newMeeting.sigla,
-      professors: newMeeting.professors,
-      turmaId: newMeeting.turmaId
-    }
-    
+    const newMeetingWithNewHours = newMeeting;
+    newMeetingWithNewHours.endHour = toHour;
+    newMeetingWithNewHours.startHour = fromHour;
+    newMeetingWithNewHours.weekDay = weekDay;
+
     setNewMeeting(newMeetingWithNewHours);
-    
+    updateFreeTeachers(newMeetingWithNewHours);
+
     console.log("New Meeting With Changed Hours");
     console.log(newMeetingWithNewHours);
+  }
+
+  const changeSecretarioNewMeeting = (teacherId: number) => {
+    const newMeetingWithNewSecretario = newMeeting;
+    newMeetingWithNewSecretario.secretario = teacherId;
+    newMeetingWithNewSecretario.professors = newMeetingWithNewSecretario.professors.filter(s => s != teacherId);
+    setNewMeeting(newMeetingWithNewSecretario);
+  }
+
+  const changeOrientadorNewMeeting = (teacherId: number) => {
+    const newMeetingWithNewOrientador = newMeeting;
+    newMeetingWithNewOrientador.orientador = teacherId;
+    newMeetingWithNewOrientador.professors = newMeetingWithNewOrientador.professors.filter(s => s != teacherId);
+    setNewMeeting(newMeetingWithNewOrientador);
+  }
+
+  const changeCoordenadorNewMeeting = (teacherId: number) => {
+    const newMeetingWithNewCoordenador = newMeeting;
+    newMeetingWithNewCoordenador.coordenador = teacherId;
+    newMeetingWithNewCoordenador.professors = newMeetingWithNewCoordenador.professors.filter(s => s != teacherId);
+    setNewMeeting(newMeetingWithNewCoordenador);
   }
 
   const addTeacherToNewMeeting = (teacherId: number) => {
     const newMeetingWithNewTeachers: newMeetingType = newMeeting;
 
-    newMeetingWithNewTeachers.professors.push(teacherId);
-    
+    if (newMeetingWithNewTeachers.professors.find(s => s == teacherId) === undefined) {
+      newMeetingWithNewTeachers.professors.push(teacherId);
+    }
+
     setNewMeeting(newMeetingWithNewTeachers);
   }
 
   const removeTeacherToNewMeeting = (teacherId: number) => {
+    if (
+      newMeeting.secretario != teacherId &&
+      newMeeting.orientador != teacherId &&
+      newMeeting.coordenador != teacherId
+    ) {
+      const newMeetingWithNewTeachersGone: newMeetingType = newMeeting;
+
+      newMeetingWithNewTeachersGone.professors = newMeeting.professors.filter(s => s !== teacherId);
+
+      console.log("Remove teacher")
+      console.log("id " + teacherId);
+      console.log(newMeetingWithNewTeachersGone);
+
+      setNewMeeting(newMeetingWithNewTeachersGone);
+    }
+  }
+
+  const removeAllTeachersFromNewMeeting = () => {
     const newMeetingWithNewTeachersGone: newMeetingType = newMeeting;
 
-    newMeetingWithNewTeachersGone.professors = newMeeting.professors.filter(s => s !== teacherId);
-    
+    newMeetingWithNewTeachersGone.professors = [];
+
     setNewMeeting(newMeetingWithNewTeachersGone);
   }
 
@@ -89,6 +154,10 @@ export const App = () => {
       setFreeTime(tempFreeTime);
     }
 
+    if (page === "canvas") {
+      removeAllTeachersFromNewMeeting();
+    }
+
     setPage(page);
   }
 
@@ -98,6 +167,7 @@ export const App = () => {
 
   const handleSetNewMeeting = (meeting: newMeetingType) => {
     setNewMeeting(meeting);
+    updateFreeTeachers(meeting);
   }
 
   const handleSetFreeTime = (time: busyTime) => {
@@ -132,6 +202,7 @@ export const App = () => {
                 changePage={changePage}
                 turmas={turma}
                 teachers={teachers}
+                freeTeachers={freeTeachers}
                 newMeeting={newMeeting}
                 setFreeTime={handleSetFreeTime}
                 setNewMeeting={handleSetNewMeeting}
@@ -139,6 +210,9 @@ export const App = () => {
                 apiUrlMerge={apiUrlMerge}
                 addTeacher={addTeacherToNewMeeting}
                 removeTeacher={removeTeacherToNewMeeting}
+                changeSecretario={changeSecretarioNewMeeting}
+                changeOrientador={changeOrientadorNewMeeting}
+                changeCoordenador={changeCoordenadorNewMeeting}
               />
               : page === "read" &&
               <SetFiles
@@ -166,6 +240,9 @@ interface teacherMeetings {
   endHour: number;
   endMinute: number;
   weekDay: number;
+  orientador: number;
+  coordenador: number;
+  secretario: number;
   professors: Array<number>;
 }
 
@@ -186,6 +263,9 @@ type newMeetingType = {
   endMinute: number;
   weekDay: number;
   sigla: string;
+  orientador: number;
+  coordenador: number;
+  secretario: number;
   professors: Array<number>;
 }
 
