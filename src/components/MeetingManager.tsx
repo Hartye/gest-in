@@ -2,8 +2,8 @@
 import "../styles/MeetingManager.css"
 
 // Components
-import { ChooseTeacher } from "../components/ChooseTeacher"
-import { DetailedCell } from "../components/fragments/DetailedCell"
+import { ChooseTeacher } from "./ChooseTeacher"
+import { DetailedCell } from "./fragments/DetailedCell"
 
 export const MeetingManager = (props: propsType) => {
     const {

@@ -2,7 +2,7 @@
 import "../styles/SetFiles.css"
 
 // Components
-import { ReadFile } from "../components/fragments/ReadFile"
+import { ReadFile } from "./fragments/ReadFile"
 
 // Assets
 import Right from "../assets/Right.webp"

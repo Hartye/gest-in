@@ -2,7 +2,7 @@
 import "../styles/Canvas.css";
 
 // Components
-import { SlotsTable } from "../components/fragments/SlotsTable";
+import { SlotsTable } from "./fragments/SlotsTable";
 
 export const Canvas = (props: propsType) => {
     const {
