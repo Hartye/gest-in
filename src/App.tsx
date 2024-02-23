@@ -4,13 +4,20 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 // Styles
 import './styles/App.css'
+import { Manager } from './pages/Manager';
 
 export const App = () => {
+  const apiUrlBase = "https://gest-in-back-end.vercel.app";
+
   const router = createBrowserRouter([
     {
-      path: "/",
+      path: "/teacher",
       element: <Teacher />,
     },
+    {
+      path: "/manager",
+      element: <Manager apiBase={apiUrlBase} />
+    }
   ]);
 
   return (
