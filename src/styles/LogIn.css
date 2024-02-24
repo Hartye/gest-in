@@ -1,4 +1,4 @@
-section.select-files {
+section.log-in-back {
     width: 100%;
     height: 100%;
 
@@ -16,7 +16,7 @@ section.select-files {
     left: 0;
 }
 
-section.select-files div.notice {
+section.log-in-back div.log-in-front {
     width: 400px;
     height: 90%;
     background-color: var(--black);
@@ -31,46 +31,31 @@ section.select-files div.notice {
     flex-direction: column;
     justify-content: space-between;
 
-    &>div>div.option-buttons {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        gap: 5px;
-        height: fit-content;
-
-        & button {
-            padding-inline: 20px;
-            font-size: 1rem;
-            gap: 5px;
-            border-radius: 10px;
-        }
-    }
-
-    &>div {
+    & > div {
         display: flex;
         flex-direction: column;
         width: 100%;
         gap: 20px;
         height: fit-content;
 
-        &>p {
+        & > p {
             width: 100%;
             font-size: 1.3rem;
             color: var(--white);
         }
 
-        &>span {
+        & > span {
             width: 100%;
             font-size: .9rem;
             font-weight: 400;
             color: var(--white);
         }
 
-        &>div {
+        & > div {
             display: none;
         }
 
-        &>div.appear {
+        & > div.appear {
             width: 100%;
             display: flex;
             align-items: center;
@@ -111,9 +96,7 @@ section.select-files div.notice {
     0% {
         transform: translateY(2000px);
         transition: all .5s ease-in-out;
-    }
-
-    100% {
+    } 100% {
         transform: translateY(0);
         transition: all .5s ease-in-out;
     }

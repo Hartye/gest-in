@@ -12,10 +12,13 @@ export const MeetingManager = (props: propsType) => {
         teachers,
         freeTeachers,
         setNewMeeting,
+        setTeacher,
+        setTurma,
         setFreeTime,
         newMeeting,
         apiUrlNewMeeting,
         apiUrlMerge,
+        apiBase,
         addTeacher,
         removeTeacher,
         changeSecretario,
@@ -23,12 +26,36 @@ export const MeetingManager = (props: propsType) => {
         changeCoordenador
     } = props;
 
+    const apiUrlGetInfo = apiBase + "/get/info";
+
+    const handleGetInfoFromBack = () => {
+        const url = new Request(apiUrlGetInfo);
+
+        fetch(url, {
+            method: "GET",
+            headers: {
+                "content-type": "application/json",
+            }
+        })
+            .then((info) => info.json())
+            .then((info) => {
+                setTurma(info.turmas);
+                setTeacher(info.teachers);
+                setNewMeeting(info.newMeeting);
+            })
+            .catch((err) => console.log(err));
+    }
+
     const loadNewMeeting = () => {
         if (newMeeting.endHour !== 0 && newMeeting.startHour !== 0) {
             return;
         }
 
         const url = new Request(apiUrlNewMeeting);
+
+        if (teachers.length == 0 || turmas.length == 0) {
+            handleGetInfoFromBack();
+        }
 
         fetch(url, {
             method: "POST",
@@ -44,6 +71,28 @@ export const MeetingManager = (props: propsType) => {
 
                 console.log(data.newMeeting);
                 console.log(data.freeTimeTable);
+            })
+            .catch((err) => console.log(err));
+    }
+
+    const setInfoOnFirebase = (newDataTurmas: Array<turmaType>, newDataProfessores: Array<teachersObject>) => {
+        const url = new Request(apiBase + "/merge/info")
+
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+            },
+            body: JSON.stringify({
+                turma: newDataTurmas,
+                teachers: newDataProfessores
+            })
+        })
+            .then((data) => data.json())
+            .then((data) => {
+                if (!data) {
+                    alert("Erro ao tentar ler os arquivos");
+                }
             })
             .catch((err) => console.log(err));
     }
@@ -80,7 +129,8 @@ export const MeetingManager = (props: propsType) => {
                 console.log(data.turmas);
                 console.log(data.professores);
 
-                
+                setInfoOnFirebase(newDataTurmas as Array<turmaType>, newDataProfessores as Array<teachersObject>);
+
                 changePage("read");
             })
             .catch((err) => {
@@ -106,12 +156,12 @@ export const MeetingManager = (props: propsType) => {
                 newMeeting={newMeeting}
                 changePage={changePage}
             />
-            <ChooseTeacher 
-                changePage={changePage} 
+            <ChooseTeacher
+                changePage={changePage}
                 freeTeachers={freeTeachers}
-                createNewFile={createNewFile} 
-                addTeacher={addTeacher} 
-                removeTeacher={removeTeacher} 
+                createNewFile={createNewFile}
+                addTeacher={addTeacher}
+                removeTeacher={removeTeacher}
                 changeSecretario={changeSecretario}
                 changeOrientador={changeOrientador}
                 changeCoordenador={changeCoordenador}
@@ -146,6 +196,9 @@ interface teacherMeetings {
     endHour: number;
     endMinute: number;
     weekDay: number;
+    orientador: number;
+    coordenador: number;
+    secretario: number;
     professors: Array<number>;
 }
 
@@ -179,15 +232,19 @@ type newMeetingType = {
 }
 
 type propsType = {
+    full: boolean;
     changePage: (page: string) => void;
     turmas: Array<turmaType>;
     teachers: Array<teachersObject>;
     freeTeachers: Array<teachersObject>;
     setNewMeeting: (meeting: newMeetingType) => void;
+    setTurma: (data: Array<turmaType>) => void;
+    setTeacher: (data: Array<teachersObject>) => void;
     setFreeTime: (time: busyTime) => void;
     newMeeting: newMeetingType;
     apiUrlNewMeeting: string;
     apiUrlMerge: string;
+    apiBase: string;
     addTeacher: (teacherId: number) => void;
     removeTeacher: (teacherId: number) => void;
     changeSecretario: (teacherId: number) => void;

@@ -1,31 +1,34 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // Styles
 import "../styles/Manager.css";
 
 // Components
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Canvas } from "../components/Canvas";
 import { MeetingManager } from "../components/MeetingManager";
 import { SetFiles } from "../components/SetFiles";
 import { SideControllers } from "../components/SideControllers";
 
-// Firebase
-import { collection, addDoc } from "firebase/firestore";
-// @ts-expect-error
-import { db } from "../firebase-config.js";
-
 export const Manager = (props: propsType) => {
-  const { apiBase } = props;
-
-  // Firebase
-  const refToTeachers = collection(db, "teachers");
-  const refToTurmas = collection(db, "turmas");
-  const refToNewMeeting = collection(db, "newMeeting");
+  const {
+    apiBase,
+    user,
+    pass,
+    setUser
+  } = props;
 
   // API
   const apiUrlBase = apiBase;
   const apiUrlMerge = apiUrlBase + "/merge";
   const apiUrlNewMeeting = apiUrlBase + "/new/meeting";
   const apiUrlFreeTeachers = apiUrlBase + "/free/teachers";
+  const apiUrlLogin = apiUrlBase + "/login";
+  const apiUrlNewMeetingOpen = apiUrlBase + "/new/meeting/open";
+  const apiUrlUpdateNewMeeting = apiUrlBase + "/update/new/meeting";
+
+  const navigate = useNavigate();
 
   const tempMeeting: newMeetingType = {
     endHour: 0,
@@ -172,15 +175,12 @@ export const Manager = (props: propsType) => {
     updateNewMeetingOnFirestore(newMeetingWithNewTeachersGone);
   };
 
-  const changeturma = async (data: Array<turmaType>): Promise<void> => {
+  const changeturma = (data: Array<turmaType>) => {
     setTurma(data);
+  };
 
-    await addDoc(
-        refToTurmas,
-        {
-            turma: data
-        }
-    )
+  const handleSetTeachers = (data: Array<teachersObject>) => {
+    setTeachers(data);
   };
 
   const changePage = (page: string) => {
@@ -198,17 +198,6 @@ export const Manager = (props: propsType) => {
     setPage(page);
   };
 
-  const handleSetTeachers = async (data: Array<teachersObject>) => {
-    setTeachers(data);
-
-    await addDoc(
-        refToTeachers,
-        {
-            teachers: data
-        }
-    )
-  };
-
   const handleSetNewMeeting = (meeting: newMeetingType) => {
     setNewMeeting(meeting);
     updateFreeTeachers(meeting);
@@ -224,18 +213,82 @@ export const Manager = (props: propsType) => {
   };
 
   const updateNewMeetingOnFirestore = async (meeting: newMeetingType) => {
-    await addDoc(
-      refToNewMeeting,
-      {
+    // Ask back-end to update newMeeting on firestore
+    const url = new Request(apiUrlUpdateNewMeeting);
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
         newMeeting: meeting
-      }
-    )
+      })
+    })
+      .catch((err) => console.log(err));
   }
 
+  const isNewMeetingOpen = () => {
+    const url = new Request(apiUrlNewMeetingOpen);
+
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+      }
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        if (data) {
+          changePage("manager");
+        }
+      })
+      .catch((err) => console.log(err));
+  }
+
+  const checkUser = () => {
+    const url = new Request(apiUrlLogin);
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        user: user,
+        pass: pass
+      })
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        if (data == false || data != "manager") {
+          location.pathname = "/";
+        }
+        else {
+          isNewMeetingOpen();
+        }
+      })
+      .catch((err) => console.log(err));
+  }
+
+  const handleLogOut = () => {
+    setUser(-1, "", "");
+  }
+
+  useEffect(() => {
+    if (user == -1) {
+      navigate("/");
+    }
+  }, [user, navigate])
+
+  useEffect(() => {
+    updateFreeTeachers(newMeeting);
+  }, [teachers, newMeeting]);
+
   return (
-    <main>
+    <main onLoad={() => checkUser()}>
       <aside>
-        <SideControllers newMeeting={newMeeting} changePage={changePage} />
+        <SideControllers apiBase={apiBase} logOut={handleLogOut} newMeeting={newMeeting} changePage={changePage} />
       </aside>
       <section>
         {page === "canvas" ? (
@@ -248,6 +301,7 @@ export const Manager = (props: propsType) => {
           />
         ) : page === "manager" ? (
           <MeetingManager
+            full={true}
             changePage={changePage}
             turmas={turma}
             teachers={teachers}
@@ -255,8 +309,11 @@ export const Manager = (props: propsType) => {
             newMeeting={newMeeting}
             setFreeTime={handleSetFreeTime}
             setNewMeeting={handleSetNewMeeting}
+            setTurma={changeturma}
+            setTeacher={handleSetTeachers}
             apiUrlNewMeeting={apiUrlNewMeeting}
             apiUrlMerge={apiUrlMerge}
+            apiBase={apiBase}
             addTeacher={addTeacherToNewMeeting}
             removeTeacher={removeTeacherToNewMeeting}
             changeSecretario={changeSecretarioNewMeeting}
@@ -266,9 +323,11 @@ export const Manager = (props: propsType) => {
         ) : (
           page === "read" && (
             <SetFiles
+              apiBase={apiBase}
               setTurma={changeturma}
               setTeacher={handleSetTeachers}
               changePage={changePage}
+              logOut={handleLogOut}
             />
           )
         )}
@@ -337,6 +396,10 @@ interface busyTime {
   sab: Array<busyIntervals>;
   dom: Array<busyIntervals>;
 }
+
 type propsType = {
+  user: number;
+  pass: string;
   apiBase: string;
+  setUser: (user: number, pass: string, role: string) => void;
 };

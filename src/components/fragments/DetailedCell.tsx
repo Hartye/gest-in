@@ -3,6 +3,7 @@ import "../../styles/DetailedCell.css"
 
 export const DetailedCell = (props: propsType) => {
     const {
+        full,
         newMeeting,
         changePage
     } = props;
@@ -10,9 +11,12 @@ export const DetailedCell = (props: propsType) => {
     return (
         <div className="detailed-cell">
             <h2>Nova reunião</h2>
-            <button className="pointer-on-hover shadow-gray click" onClick={() => {
-                changePage("canvas");
-            }}>Escolher outra hora</button>
+            {
+                full &&
+                <button className="pointer-on-hover shadow-gray click" onClick={() => {
+                    changePage("canvas");
+                }}>Escolher outra hora</button>
+            }
             <div className="cell-fill">
                 <p>{
                 newMeeting !== undefined ?
@@ -44,6 +48,7 @@ type newMeetingType = {
 }
 
 type propsType = {
+    full: boolean;
     newMeeting: newMeetingType;
     changePage: (page: string) => void;
 }

@@ -8,6 +8,7 @@ import { MultiSelectList } from "./fragments/MultiSelectList";
 
 export const ChooseTeacher = (props: propsType) => {
     const {
+        full,
         changePage,
         createNewFile,
         freeTeachers,
@@ -53,7 +54,10 @@ export const ChooseTeacher = (props: propsType) => {
 
     return (
         <div className="choose-teacher">
-            <input type="text" id="turma-name" placeholder="Nome da turma" />
+            {
+                full &&
+                <input type="text" id="turma-name" placeholder="Nome da turma" />
+            }
             <StylizedDropDown
                 type="secretario"
                 title="Professor Secretário"
@@ -77,10 +81,13 @@ export const ChooseTeacher = (props: propsType) => {
                 addTeacher={addTeacher}
                 removeTeacher={removeTeacher}
             />
-            <div className="controls">
-                <button className="click pointer-on-hover shadow-gray" onClick={() => changePage("canvas")}>Cancelar</button>
-                <button className="click pointer-on-hover shadow-gray" onClick={() => handleCreate()}>Finalizar</button>
-            </div>
+            {
+                full == true &&
+                <div className="controls">
+                    <button className="click pointer-on-hover shadow-gray" onClick={() => changePage("canvas")}>Cancelar</button>
+                    <button className="click pointer-on-hover shadow-gray" onClick={() => handleCreate()}>Finalizar</button>
+                </div>
+            }
         </div>
     )
 }
@@ -103,6 +110,7 @@ interface teachersObject {
 }
 
 type propsType = {
+    full: boolean;
     changePage: (page: string) => void;
     createNewFile: (turmaName: string) => void;
     freeTeachers: Array<teachersObject>;

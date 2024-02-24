@@ -1,18 +1,32 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // Componentes
 import { SimpleSideControllers } from "../components/SimpleSideControllers";
 import { TeacherCanvas } from "../components/TeacherCanvas";
 
 // React
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Firebase
 import { collection, query, getDocs } from "firebase/firestore";
 // @ts-expect-error
 import { db } from "../firebase-config.js";
 
-export const Teacher = () => {
+export const Teacher = (props: propsType) => {
+  const {
+    user,
+    pass,
+    apiBase,
+    setUser
+  } = props;
+
   const [turma, setTurma] = useState(Array<turmaType>);
   const [teachers, setTeachers] = useState(Array<teachersObject>);
+
+  // API
+  const apiLogIn = "/login";
+
+  const navigate = useNavigate();
 
   const makeRequest = async () => {
     const meetingsQuery = query(collection(db, "teachers"));
@@ -21,7 +35,7 @@ export const Teacher = () => {
     const turmaSnapshot = await getDocs(turmaQuery);
 
     // teachers
-    let tempTeachers: Array<teachersFromFirebase> = [
+    const tempTeachers: Array<teachersFromFirebase> = [
       {
         data: teachers
       }
@@ -44,7 +58,7 @@ export const Teacher = () => {
     });
 
     // Turmas
-    let tempTurmas: turmasFromFirebase = {
+    const tempTurmas: turmasFromFirebase = {
       data: turma,
     };
 
@@ -58,10 +72,45 @@ export const Teacher = () => {
     setTurma(tempTurmas.data.turma);
   };
 
+  const checkUser = () => {
+    const url = new Request(apiBase + apiLogIn);
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        user: user,
+        pass: pass
+      })
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        if (data == false || data != "teacher") {
+          location.pathname = "/";
+        }
+        else {
+          makeRequest();
+        }
+      })
+      .catch((err) => console.log(err));
+  }
+
+  const handleLogOut = () => {
+    setUser(-1, "", "");
+  }
+
+  useEffect(() => {
+    if (user == -1) {
+      navigate("/");
+    }
+  }, [user, navigate])
+
   return (
-    <main onLoad={() => makeRequest()}>
+    <main onLoad={() => checkUser()}>
       <aside>
-        <SimpleSideControllers />
+        <SimpleSideControllers logOut={handleLogOut} />
       </aside>
       <section>
         <TeacherCanvas turmas={turma} teachers={teachers} />
@@ -102,4 +151,11 @@ interface teachersObject {
   name: string;
   type: teacherType;
   meetings: Array<teacherMeetings>;
+}
+
+type propsType = {
+  user: number;
+  pass: string;
+  apiBase: string;
+  setUser: (user: number, pass: string, role: string) => void;
 }

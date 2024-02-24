@@ -9,13 +9,19 @@ import { ChooseSlot } from "./ChooseSlot"
 export const SideControllers = (props: propsType) => {
     const {
         newMeeting,
-        changePage
+        changePage,
+        logOut,
+        apiBase
     } = props;
+
+    const handleLogOut = () => {
+        logOut();
+    }
 
     return (
         <section className="side-controllers">
-            <AccountButton userName="Olá" />
-            <PagesDropDown changePage={changePage} />
+            <AccountButton logOut={handleLogOut} userName="Olá" />
+            <PagesDropDown changePage={changePage} apiBase={apiBase} />
             <ChooseSlot
                 newMeeting={newMeeting}
                 changePage={changePage}
@@ -38,4 +44,6 @@ type newMeetingType = {
 type propsType = {
     newMeeting: newMeetingType;
     changePage: (page: string) => void;
+    logOut: () => void;
+    apiBase: string;
 }

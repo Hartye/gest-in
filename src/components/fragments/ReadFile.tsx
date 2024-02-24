@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // Styles
 import "../../styles/ReadFile.css";
 
@@ -9,7 +10,8 @@ export const ReadFile = (props: propsType) => {
     const {
         changeInfo,
         setTurmaState,
-        setTeacherState
+        setTeacherState,
+        apiBase
     } = props;
 
     const [tempTurma, setTempTurma] = useState(Array<turmaType>);
@@ -50,11 +52,32 @@ export const ReadFile = (props: propsType) => {
                     }
                     else if (parsedToObject[0].format == "professor") {
                         const teacherTypeData: Array<teachersObject> = parsedToObject as Array<teachersObject>;
-                        setTempTeacher(teacherTypeData);
-                        setTeacherRead(true);
-                        setTeacherState(true);
-                        console.log("Professores");
-                        console.log(parsedToObject);
+
+                        const url = new Request(apiBase + "/validate/teachers");
+
+                        fetch(url, {
+                            method: "POST",
+                            headers: {
+                                "content-type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                teachers: teacherTypeData
+                            })
+                        })
+                            .then((data) => data.json())
+                            .then((data) => {
+                                if (data) {
+                                    setTempTeacher(teacherTypeData);
+                                    setTeacherRead(true);
+                                    setTeacherState(true);
+                                    console.log("Professores");
+                                    console.log(parsedToObject);
+                                }
+                                else {
+                                    alert("Erro ao tentar carregar os professores. Há conflito das reuniões lidas com as já existentes.");
+                                }
+                            })
+                            .catch((err) => console.log(err));
                     }
                     else {
                         const text = "Erro não foi possível ler o arquivo";
@@ -117,4 +140,5 @@ interface propsType {
     changeInfo: (teachers: Array<teachersObject>, turmas: Array<turmaType>) => void;
     setTurmaState: (state: boolean) => void;
     setTeacherState: (state: boolean) => void;
+    apiBase: string;
 }

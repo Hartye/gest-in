@@ -6,11 +6,32 @@ import CaretDownIcon from "../../assets/caret_down.svg";
 
 export const PagesDropDown = (props: propsType) => {
     const {
-        changePage
+        changePage,
+        apiBase
     } = props;
+
+    const apiUrlDeleteNewMeeting = apiBase + "/delete/new/meetings";
 
     const handleChangePage = (page: string) => {
         changePage(page);
+    }
+
+    const handleClearNewMeeting = () => {
+        const url = new Request(apiUrlDeleteNewMeeting);
+
+        fetch(url, {
+            method: "GET",
+            headers: {
+                "content-type": "application/json",
+            }
+        })
+            .then((data) => data.json())
+            .then((data) => {
+                if (data) {
+                    handleChangePage("read");
+                }
+            })
+            .catch((err) => console.log(err));
     }
 
     return (
@@ -24,7 +45,7 @@ export const PagesDropDown = (props: propsType) => {
             </span>
             <div className='combobox-body pages'>
                 <li className='click' onClick={() => handleChangePage("canvas")}>Horário</li>
-                <li className='click' onClick={() => handleChangePage("read")}>Carregar novos arquivos</li>
+                <li className='click' onClick={() => handleClearNewMeeting()}>Carregar novos arquivos</li>
             </div>
         </nav>
     )
@@ -32,4 +53,5 @@ export const PagesDropDown = (props: propsType) => {
 
 type propsType = {
     changePage: (page: string) => void;
+    apiBase: string;
 }
