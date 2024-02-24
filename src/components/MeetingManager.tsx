@@ -7,6 +7,7 @@ import { DetailedCell } from "./fragments/DetailedCell"
 
 export const MeetingManager = (props: propsType) => {
     const {
+        full,
         changePage,
         turmas,
         teachers,
@@ -155,8 +156,10 @@ export const MeetingManager = (props: propsType) => {
             <DetailedCell
                 newMeeting={newMeeting}
                 changePage={changePage}
+                full={full}
             />
             <ChooseTeacher
+                full={full}
                 changePage={changePage}
                 freeTeachers={freeTeachers}
                 createNewFile={createNewFile}
