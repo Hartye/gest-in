@@ -18,7 +18,7 @@ section.select-files {
 
 section.select-files div.notice {
     width: 400px;
-    height: 90%;
+    min-height: 90%;
     background-color: var(--black);
     border: 10px solid var(--white);
     border-radius: 20px;
@@ -47,6 +47,7 @@ section.select-files div.notice {
     }
 
     &>div {
+        margin-bottom: 20px;
         display: flex;
         flex-direction: column;
         width: 100%;

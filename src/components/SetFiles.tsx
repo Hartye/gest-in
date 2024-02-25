@@ -102,9 +102,6 @@ export const SetFiles = (props: propsType) => {
                         <button className="pointer-on-hover click" onClick={() => {
                             handleDeleteInfoFromFirebase();
                         }}>Limpar dados existentes</button>
-                        <button className="pointer-on-hover click" onClick={() => {
-                            changePage("manager");
-                        }}>Continuar com dados existentes</button>
                     </div>
                     <button className="shadow-gray pointer-on-hover click" onClick={() => {
                         handleLogOut();

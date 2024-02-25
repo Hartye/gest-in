@@ -152,12 +152,15 @@ export const MeetingManager = (props: propsType) => {
     }
 
     return (
-        <section className="manager" onLoad={() => loadNewMeeting()}>
-            <DetailedCell
-                newMeeting={newMeeting}
-                changePage={changePage}
-                full={full}
-            />
+        <section className={full == false ? "manager one" : "manager"} onLoad={() => loadNewMeeting()}>
+            {
+                full == true &&
+                <DetailedCell
+                    newMeeting={newMeeting}
+                    changePage={changePage}
+                    full={full}
+                />
+            }
             <ChooseTeacher
                 full={full}
                 changePage={changePage}

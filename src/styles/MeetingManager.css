@@ -12,6 +12,10 @@ section.manager {
     gap: 10px;
 
     background-color: var(--dark-white);
+
+    &.one {
+        grid-template-columns: 1fr;
+    }
 }
 
 section.manager::after {

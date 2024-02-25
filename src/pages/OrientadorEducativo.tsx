@@ -103,11 +103,13 @@ export const OrientadorEducativo = (props: propsType) => {
     const addTeacherToNewMeeting = (teacherId: number) => {
         const newMeetingWithNewTeachers: newMeetingType = newMeeting;
 
-        if (
-            newMeetingWithNewTeachers.professors.find((s) => s == teacherId) ===
-            undefined
-        ) {
-            newMeetingWithNewTeachers.professors.push(teacherId);
+        if (newMeetingWithNewTeachers.professors !== undefined) {
+            if (
+                newMeetingWithNewTeachers.professors.find((s) => s == teacherId) ===
+                undefined
+            ) {
+                newMeetingWithNewTeachers.professors.push(teacherId);
+            }
         }
 
         setNewMeeting(newMeetingWithNewTeachers);

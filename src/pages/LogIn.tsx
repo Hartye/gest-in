@@ -56,9 +56,6 @@ export const LogIn = (props: propsType) => {
                     </span>
                     <LogInPopUp logIn={handleLogIn} changeLogInState={handleChangeLogInState} logInOpen={logInOpen} />
                 </div>
-                <button className="shadow-gray pointer-on-hover click" onClick={() => {
-                    history.back();
-                }}>Cancelar</button>
             </div>
         </section>
     )
