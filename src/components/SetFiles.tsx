@@ -14,7 +14,10 @@ export const SetFiles = (props: propsType) => {
         setTurma,
         changePage,
         logOut,
-        apiBase
+        apiBase,
+        apiUrlGetInfo,
+        apiUrlNewMeeting,
+        apiUrlUpdateNewMeeting
     } = props;
 
     const apiUrlDeleteInfo = apiBase + "/delete/info";
@@ -22,6 +25,7 @@ export const SetFiles = (props: propsType) => {
 
     const [turmaRead, setTurmaRead] = useState(false);
     const [teacherRead, setTeacherRead] = useState(false);
+    const [continueWithExistingFiles, setContinueWithExistingFiles] = useState(false);
 
     const handleSetInfoOnFirebase = (teachers: Array<teachersObject>, turmas: Array<turmaType>) => {
         const url = new Request(apiUrlAddInfo);
@@ -72,13 +76,82 @@ export const SetFiles = (props: propsType) => {
             .then((data) => {
                 if (data) {
                     alert("Informação existente deletada com sucesso. Leia os dados dos arquivos para carregá-los novamente.");
+                    handleCheckForExistingFirebaseData();
+                }
+            })
+            .catch((err) => console.log(err));
+    }
+
+    const handleCheckForExistingFirebaseData = () => {
+        const url = new Request(apiUrlGetInfo);
+
+        fetch(url, {
+            method: "GET",
+            headers: {
+                "content-type": "application/json",
+            }
+        })
+            .then(data => data.json())
+            .then(data => {
+                if (data.teachers.length > 0 && data.turmas.length > 0) {
+                    setContinueWithExistingFiles(true);
+                }
+                else {
+                    setContinueWithExistingFiles(false);
+                }
+            })
+            .catch((err) => console.log(err));
+    }
+
+    const handleContinuesWithExistingFirebaseData = () => {
+        let url = new Request(apiUrlGetInfo);
+
+        fetch(url, {
+            method: "GET",
+            headers: {
+                "content-type": "application/json",
+            }
+        })
+            .then(info => info.json())
+            .then(info => {
+                if (info.teachers.length > 0 && info.turmas.length > 0) {
+                    url = new Request(apiUrlNewMeeting);
+
+                    fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "content-type": "application/json"
+                        },
+                        body: JSON.stringify(info.teachers)
+                    })
+                        .then((data) => data.json())
+                        .then((data) => {
+                            url = new Request(apiUrlUpdateNewMeeting);
+
+                            fetch(url, {
+                                method: "POST",
+                                headers: {
+                                    "content-type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    newMeeting: data.newMeeting
+                                })
+                            })
+                                .then(() => {
+                                    changePage("manager");
+                                })
+                                .catch((err) => console.log(err));
+                        })
+                        .catch((err) => console.log(err));
                 }
             })
             .catch((err) => console.log(err));
     }
 
     return (
-        <section className="select-files">
+        <section className="select-files" onLoad={() => {
+            handleCheckForExistingFirebaseData();
+        }}>
             <div className="notice">
                 <div>
                     <p>É preciso carregar of ficheiros de turma e de professores para prosseguir para a plataforma.</p>
@@ -102,6 +175,12 @@ export const SetFiles = (props: propsType) => {
                         <button className="pointer-on-hover click" onClick={() => {
                             handleDeleteInfoFromFirebase();
                         }}>Limpar dados existentes</button>
+                        {
+                            continueWithExistingFiles === true &&
+                            <button className="pointer-on-hover click" onClick={() => {
+                                handleContinuesWithExistingFirebaseData();
+                            }}>Nova reunião</button>
+                        }
                     </div>
                     <button className="shadow-gray pointer-on-hover click" onClick={() => {
                         handleLogOut();
@@ -147,4 +226,7 @@ type propsType = {
     changePage: (page: string) => void;
     logOut: () => void;
     apiBase: string;
+    apiUrlNewMeeting: string;
+    apiUrlUpdateNewMeeting: string;
+    apiUrlGetInfo: string;
 }

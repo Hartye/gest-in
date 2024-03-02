@@ -163,8 +163,11 @@ export const MeetingManager = (props: propsType) => {
             }
             <ChooseTeacher
                 full={full}
+                newMeeting={newMeeting}
+                teachers={teachers}
                 changePage={changePage}
                 freeTeachers={freeTeachers}
+                choosenTeachers={newMeeting.professors}
                 createNewFile={createNewFile}
                 addTeacher={addTeacher}
                 removeTeacher={removeTeacher}

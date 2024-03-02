@@ -163,18 +163,32 @@ export const OrientadorEducativo = (props: propsType) => {
     };
 
     const updateNewMeetingOnFirestore = async (meeting: newMeetingType) => {
-        // Ask back-end to update newMeeting on firestore
-        const url = new Request(apiUrlUpdateNewMeeting);
+        let url = new Request(apiUrlNewMeetingOpen);
 
         fetch(url, {
-            method: "POST",
+            method: "GET",
             headers: {
                 "content-type": "application/json",
-            },
-            body: JSON.stringify({
-                newMeeting: meeting
-            })
+            }
         })
+            .then((data) => data.json())
+            .then((data) => {
+                if (data) {
+                    // Ask back-end to update newMeeting on firestore
+                    url = new Request(apiUrlUpdateNewMeeting);
+            
+                    fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "content-type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            newMeeting: meeting
+                        })
+                    })
+                        .catch((err) => console.log(err));
+                }
+            })
             .catch((err) => console.log(err));
     }
 

@@ -27,6 +27,7 @@ export const Manager = (props: propsType) => {
   const apiUrlLogin = apiUrlBase + "/login";
   const apiUrlNewMeetingOpen = apiUrlBase + "/new/meeting/open";
   const apiUrlUpdateNewMeeting = apiUrlBase + "/update/new/meeting";
+  const apiUrlGetInfo = apiUrlBase + "/get/info";
 
   const navigate = useNavigate();
 
@@ -328,6 +329,9 @@ export const Manager = (props: propsType) => {
               setTeacher={handleSetTeachers}
               changePage={changePage}
               logOut={handleLogOut}
+              apiUrlGetInfo={apiUrlGetInfo}
+              apiUrlNewMeeting={apiUrlNewMeeting}
+              apiUrlUpdateNewMeeting={apiUrlUpdateNewMeeting}
             />
           )
         )}

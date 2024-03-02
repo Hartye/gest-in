@@ -7,7 +7,8 @@ export const MultiSelectList = (props: propsType) => {
         freeTeachers,
         title,
         addTeacher,
-        removeTeacher
+        removeTeacher,
+        choosenTeachers
     } = props;
 
     const handleCheckBoxClick = (id: number) => {
@@ -42,16 +43,30 @@ export const MultiSelectList = (props: propsType) => {
                     freeTeachers.map((item, index) =>
                         <div className="item">
                             <label key={index} className="pointer-on-hover">
-                                <input
-                                    type="checkbox"
-                                    defaultChecked
-                                    id={"item-" + String(item.id)}
-                                    className="pointer-on-hover"
-                                    onClick={() => {
-                                        console.log("I tried")
-                                        handleCheckBoxClick(item.id);
-                                    }}
-                                />
+                                {
+                                    choosenTeachers.find(s => s == item.id) === undefined
+                                        ?
+                                        <input
+                                            type="checkbox"
+                                            id={"item-" + String(item.id)}
+                                            className="pointer-on-hover"
+                                            onClick={() => {
+                                                console.log("I tried")
+                                                handleCheckBoxClick(item.id);
+                                            }}
+                                        />
+                                        :
+                                        <input
+                                            type="checkbox"
+                                            defaultChecked
+                                            id={"item-" + String(item.id)}
+                                            className="pointer-on-hover"
+                                            onClick={() => {
+                                                console.log("I tried")
+                                                handleCheckBoxClick(item.id);
+                                            }}
+                                        />
+                                }
                                 {
                                     item.name
                                 }
@@ -87,4 +102,5 @@ type propsType = {
     title: string;
     addTeacher: (teacherId: number) => void;
     removeTeacher: (teacherId: number) => void;
+    choosenTeachers: Array<number>;
 }

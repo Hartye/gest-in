@@ -1,15 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // Styles
 import "../../styles/StylizedDropDown.css"
 
 // Assets
 import CaretDownIcon from "../../assets/caret_down.svg"
+import { useEffect } from "react";
 
 export const StylizedDropDown = (props: propsType) => {
     const {
         type,
         title,
         list,
-        chooseItem
+        chooseItem,
+        choosenItem,
+        choosenName
     } = props;
 
     const handleChooseItem = (item: number, name: string) => {
@@ -18,6 +22,12 @@ export const StylizedDropDown = (props: propsType) => {
         const titleElement = document.querySelector(".combobox-title." + type + " > p") as HTMLSpanElement;
         titleElement.innerText = title + " - " + name;
     }
+
+    useEffect(() => {
+        if (choosenItem !== -1) {
+            handleChooseItem(choosenItem, choosenName);
+        }
+    }, [choosenItem, choosenName])
 
     return (
         <nav className='combobox choose-page pointer-on-hover'>
@@ -51,4 +61,6 @@ type propsType = {
     title: string;
     list: Array<listObject>;
     chooseItem: (item: number) => void;
+    choosenItem: number;
+    choosenName: string;
 };

@@ -10,13 +10,16 @@ export const ChooseTeacher = (props: propsType) => {
     const {
         full,
         changePage,
+        teachers,
         createNewFile,
         freeTeachers,
         addTeacher,
         removeTeacher,
         changeSecretario,
         changeOrientador,
-        changeCoordenador
+        changeCoordenador,
+        newMeeting,
+        choosenTeachers
     } = props;
 
     const [secretario, setSecretario] = useState(-1);
@@ -63,23 +66,36 @@ export const ChooseTeacher = (props: propsType) => {
                 title="Professor Secretário"
                 list={freeTeachers.filter(s => s.type == "secretario")}
                 chooseItem={chooseSecretario}
+                choosenItem={newMeeting.secretario !== -1 ? newMeeting.secretario : -1}
+                choosenName={newMeeting.secretario !== -1 ? teachers.find(s => s.id === newMeeting.secretario)?.name as string : "Not Found"}
             />
-            <StylizedDropDown
-                type="coordenador"
-                title="Professor Coordenador"
-                list={freeTeachers.filter(s => s.type == "coordenador")}
-                chooseItem={chooseCoordenador}
-            />
-            <StylizedDropDown
-                type="orientador"
-                title="Professor Orientador" list={freeTeachers.filter(s => s.type == "orientador")}
-                chooseItem={chooseOrientador} 
-            />
-            <MultiSelectList 
-                title="Professores não obrigatórios" 
-                freeTeachers={freeTeachers} 
+            {
+                full &&
+                <StylizedDropDown
+                    type="coordenador"
+                    title="Professor Coordenador"
+                    list={freeTeachers.filter(s => s.type == "coordenador")}
+                    chooseItem={chooseCoordenador}
+                    choosenItem={newMeeting.coordenador !== -1 ? newMeeting.coordenador : -1}
+                    choosenName={newMeeting.coordenador !== -1 ? teachers.find(s => s.id === newMeeting.coordenador)?.name as string : "Not Found"}
+                />
+            }
+            {
+                full &&
+                <StylizedDropDown
+                    type="orientador"
+                    title="Professor Orientador" list={freeTeachers.filter(s => s.type == "orientador")}
+                    chooseItem={chooseOrientador}
+                    choosenItem={newMeeting.orientador !== -1 ? newMeeting.orientador : -1}
+                    choosenName={newMeeting.orientador !== -1 ? teachers.find(s => s.id === newMeeting.orientador)?.name as string : "Not Found"}
+                />
+            }
+            <MultiSelectList
+                title="Professores não obrigatórios"
+                freeTeachers={freeTeachers}
                 addTeacher={addTeacher}
                 removeTeacher={removeTeacher}
+                choosenTeachers={choosenTeachers}
             />
             {
                 full == true &&
@@ -95,10 +111,16 @@ export const ChooseTeacher = (props: propsType) => {
 type teacherType = "secretario" | "coordenador" | "orientador";
 
 interface teacherMeetings {
+    turmaId: number;
     startHour: number;
     startMinute: number;
     endHour: number;
     endMinute: number;
+    weekDay: number;
+    orientador: number;
+    coordenador: number;
+    secretario: number;
+    professors: Array<number>;
 }
 
 interface teachersObject {
@@ -109,11 +131,29 @@ interface teachersObject {
     meetings: Array<teacherMeetings>
 }
 
+type newMeetingType = {
+    format: string;
+    turmaId: number;
+    startHour: number;
+    startMinute: number;
+    endHour: number;
+    endMinute: number;
+    sigla: string;
+    weekDay: number;
+    orientador: number;
+    coordenador: number;
+    secretario: number;
+    professors: Array<number>;
+}
+
 type propsType = {
     full: boolean;
+    teachers: Array<teachersObject>;
+    newMeeting: newMeetingType;
     changePage: (page: string) => void;
     createNewFile: (turmaName: string) => void;
     freeTeachers: Array<teachersObject>;
+    choosenTeachers: Array<number>;
     addTeacher: (teacherId: number) => void;
     removeTeacher: (teacherId: number) => void;
     changeSecretario: (teacherId: number) => void;
