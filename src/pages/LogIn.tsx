@@ -25,7 +25,6 @@ export const LogIn = (props: propsType) => {
 
         fetch(url, {
             method: "POST",
-            mode: "no-cors",
             headers: {
                 "content-type": "application/json",
             },

@@ -219,7 +219,6 @@ export const Manager = (props: propsType) => {
 
     fetch(url, {
       method: "POST",
-      mode: "no-cors",
       headers: {
         "content-type": "application/json",
       },
