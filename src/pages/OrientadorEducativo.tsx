@@ -167,6 +167,7 @@ export const OrientadorEducativo = (props: propsType) => {
 
         fetch(url, {
             method: "GET",
+            mode: "no-cors",
             headers: {
                 "content-type": "application/json",
             }
@@ -179,7 +180,7 @@ export const OrientadorEducativo = (props: propsType) => {
             
                     fetch(url, {
                         method: "POST",
-                        mode: "cors",
+                        mode: "no-cors",
                         headers: {
                             "content-type": "application/json",
                             'Access-Control-Allow-Origin': "*"
