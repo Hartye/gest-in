@@ -18,8 +18,7 @@ export const ChooseTeacher = (props: propsType) => {
         changeSecretario,
         changeOrientador,
         changeCoordenador,
-        newMeeting,
-        choosenTeachers
+        newMeeting
     } = props;
 
     const [secretario, setSecretario] = useState(-1);
@@ -95,7 +94,6 @@ export const ChooseTeacher = (props: propsType) => {
                 freeTeachers={freeTeachers}
                 addTeacher={addTeacher}
                 removeTeacher={removeTeacher}
-                choosenTeachers={choosenTeachers}
             />
             {
                 full == true &&
@@ -153,7 +151,6 @@ type propsType = {
     changePage: (page: string) => void;
     createNewFile: (turmaName: string) => void;
     freeTeachers: Array<teachersObject>;
-    choosenTeachers: Array<number>;
     addTeacher: (teacherId: number) => void;
     removeTeacher: (teacherId: number) => void;
     changeSecretario: (teacherId: number) => void;

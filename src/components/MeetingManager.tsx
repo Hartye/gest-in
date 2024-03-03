@@ -167,7 +167,6 @@ export const MeetingManager = (props: propsType) => {
                 teachers={teachers}
                 changePage={changePage}
                 freeTeachers={freeTeachers}
-                choosenTeachers={newMeeting.professors}
                 createNewFile={createNewFile}
                 addTeacher={addTeacher}
                 removeTeacher={removeTeacher}

@@ -1,14 +1,60 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // Styles
 import "../../styles/SlotsTable.css";
 
 // Dependencies
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { DetailedInfo } from "./DetailedInfo";
 
 export const SimpleSlotsTable = (props: propsType) => {
     const {
         teachers,
         turmas,
+        apiUrlGetMeetingsByHour
     } = props;
+
+    const selectedCellExample: Array<selectedCell> = [{
+        "turmaId": 0,
+        "turma": "Loading",
+        "teachers": [],
+        "secretario": 0,
+        "orientador": 0,
+        "coordenador": 0,
+        "weekDay": 1
+    }]
+
+    const [selectedCell, setSelectedCell] = useState(selectedCellExample);
+    const [cellInfoOpen, setCellInfoOpen] = useState(false);
+
+    const handleCloseCellInfo = () => {
+        setCellInfoOpen(false);
+    }
+
+    const handleCellClick = (weekDay: number, startHour: number, endHour: number) => {
+        const url = new Request(apiUrlGetMeetingsByHour);
+
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+            },
+            body: JSON.stringify({
+                teachers: teachers,
+                turmas: turmas,
+                hours: {
+                    weekDay: weekDay,
+                    startHour: startHour,
+                    endHour: endHour
+                }
+            })
+        })
+            .then((data) => data.json())
+            .then((data) => {
+                setSelectedCell(data);
+                setCellInfoOpen(true);
+            })
+            .catch((err) => console.log(err));
+    }
 
     // This will run on load just once
     useEffect(() => {
@@ -114,6 +160,9 @@ export const SimpleSlotsTable = (props: propsType) => {
                         document.querySelectorAll(cell)?.forEach(s => {
                             s.innerHTML = turmas.find(i => i.id === meeting.turmaId)?.sigla as string;
                             s.classList.add("red");
+                            s.addEventListener('click', () => {
+                                handleCellClick(meeting.weekDay, meeting.startHour, meeting.endHour);
+                            });
                         })
                     }
                 }
@@ -121,11 +170,15 @@ export const SimpleSlotsTable = (props: propsType) => {
         })
     }, [
         teachers,
-        turmas
+        turmas,
+        handleCellClick
     ])
 
     return (
         <div className="slots-table">
+            {
+                cellInfoOpen == true && <DetailedInfo info={selectedCell} teachers={teachers} close={handleCloseCellInfo} />
+            }
             <div className="header">
                 <div></div>
                 <div>SEG</div>
@@ -169,7 +222,18 @@ interface teachersObject {
     meetings: Array<teacherMeetings>
 }
 
+interface selectedCell {
+    turmaId: number;
+    turma: string;
+    teachers: Array<number>;
+    secretario: number;
+    orientador: number;
+    coordenador: number;
+    weekDay: number;
+}
+
 type propsType = {
     teachers: Array<teachersObject>;
     turmas: Array<turmaType>;
+    apiUrlGetMeetingsByHour: string;
 }

@@ -8,6 +8,7 @@ export const TeacherCanvas = (props: propsType) => {
     const {
         teachers,
         turmas,
+        apiUrlGetMeetingsByHour
     } = props;
 
     return (
@@ -15,6 +16,7 @@ export const TeacherCanvas = (props: propsType) => {
             <SimpleSlotsTable
                 teachers={teachers}
                 turmas={turmas}
+                apiUrlGetMeetingsByHour={apiUrlGetMeetingsByHour}
             />
         </div>
     )
@@ -49,4 +51,5 @@ interface teachersObject {
 interface propsType {
     teachers: Array<teachersObject>;
     turmas: Array<turmaType>;
+    apiUrlGetMeetingsByHour: string;
 }
