@@ -24,7 +24,7 @@ section.detailed-info {
         border: 10px solid var(--dark-white);
         padding: 1rem;
 
-        animation: .5s appear ease-in-out;
+        animation: .5s appearZoom ease-in-out;
         transition: all .5s ease-in-out;
 
         display: flex;
@@ -98,7 +98,7 @@ section.detailed-info {
     }
 }
 
-@keyframes appear {
+@keyframes appearZoom {
     0% {
         transform: scale(0);
         transition: all .5s ease-in-out;
